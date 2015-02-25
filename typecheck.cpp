@@ -65,6 +65,20 @@ void typeError(TypeErrorCode code) {
 
 void TypeCheck::visitProgramNode(ProgramNode* node) {
   // WRITEME: Replace with code if necessary
+  int list_size = node->class_list->size();
+  std::list<ClassNode*>::iterator iter;
+
+  for(iter = node->class_list->begin(); iter != node->class_list->end(); ++iter){
+    IdentifierNode* id_1 = iter->identifier_1;
+  }
+
+
+
+    //visitClassNode(classNode);
+    // IdentifierNode* id_1 = classNode->identifier_1;
+    // IdentifierNode* id_2 = classNode->identifier_2;
+
+    // ClassTable* classTable = node->identifier_1, classInfo 
 }
 
 void TypeCheck::visitClassNode(ClassNode* node) {
