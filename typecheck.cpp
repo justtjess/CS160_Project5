@@ -65,28 +65,58 @@ void typeError(TypeErrorCode code) {
 
 void TypeCheck::visitProgramNode(ProgramNode* node) {
   // WRITEME: Replace with code if necessary
-  int list_size = node->class_list->size();
-  std::list<ClassNode*>::iterator iter;
+  classTable = new ClassTable;
 
-  for(iter = node->class_list->begin(); iter != node->class_list->end(); ++iter){
-    IdentifierNode* id_1 = iter->identifier_1;
-  }
+  node->visit_children(this);
 
+  // std::list<ClassNode*>::iterator class_iter;
+  // std::list<MethodNode*>::iterator method_iter;
+  // std::list<DeclarationNode*>::iterator variable_iter;
 
+  // for(class_iter = node->class_list->begin(); class_iter != node->class_list->end(); ++class_iter){
+  //   ClassNode* classNode = (*class_iter);
+  //   visitClassNode(classNode);
+  //   for(method_iter = classNode->method_list->begin(); method_iter != classNode->method_list->end(); ++method_iter){
+  //     MethodNode* methodNode = (*method_iter);
+  //     visitMethodNode(methodNode);
+  //   }
+  //   for(variable_iter = classNode->declaration_list->begin(); variable_iter != classNode->declaration_list->end(); ++variable_iter){
+  //     DeclarationNode* declarationNode = (*variable_iter);
+  //     visitDeclarationNode(declarationNode);
+  //   }
+  // }
 
-    //visitClassNode(classNode);
-    // IdentifierNode* id_1 = classNode->identifier_1;
-    // IdentifierNode* id_2 = classNode->identifier_2;
-
-    // ClassTable* classTable = node->identifier_1, classInfo 
 }
 
 void TypeCheck::visitClassNode(ClassNode* node) {
   // WRITEME: Replace with code if necessary
+  currentMethodTable = new MethodTable;
+  currentVariableTable = new VariableTable;
+  
+  ClassInfo* classInfo = new ClassInfo();
+  if(node->identifier_2->name != "")
+    classInfo->superClassName = node->identifier_2->name;
+  else
+    classInfo->superClassName = "";
+  classInfo->members = currentVariableTable;
+  classInfo->methods = currentMethodTable;
+  classInfo->membersSize = node->declaration_list->size()*4;
+  
+  node->visit_children(this);
+
+  (*classTable)[node->identifier_1->name] = (*classInfo);
+}
+
+void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
+  // WRITEME: Replace with code if necessary
+ // node->visit_children(this);
 }
 
 void TypeCheck::visitMethodNode(MethodNode* node) {
   // WRITEME: Replace with code if necessary
+  // currentVariableTable = new VariableTable;
+
+  // MethodInfo methodInfo = {node->type, currentVariableTable,
 }
 
 void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
@@ -94,10 +124,6 @@ void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
 }
 
 void TypeCheck::visitParameterNode(ParameterNode* node) {
-  // WRITEME: Replace with code if necessary
-}
-
-void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
   // WRITEME: Replace with code if necessary
 }
 
@@ -211,6 +237,11 @@ void TypeCheck::visitNoneNode(NoneNode* node) {
 
 void TypeCheck::visitIdentifierNode(IdentifierNode* node) {
   // WRITEME: Replace with code if necessary
+  // CompoundType compoundType = {node->basetype, node->objectClassName};
+  // // WHAT THE HELL ARE THE OFFSET AND SIZE!?
+  // VariableTable variableInfo = {compoundType, offset, size};
+  // (*currentVariableTable)[node->name] = ;
+
 }
 
 void TypeCheck::visitIntegerNode(IntegerNode* node) {
