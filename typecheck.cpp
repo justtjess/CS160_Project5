@@ -124,15 +124,16 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
 
   std::list<CompoundType> *compoundType;
   std::list<ParameterNode*>::iterator parameter_iter;
-  for(parameter_iter = node->parameter_list->begin(); parameter_iter != node->parameter_list->end(); ++parameter_iter){
+  if(node->parameter_list != NULL){
+    for(parameter_iter = node->parameter_list->begin(); parameter_iter != node->parameter_list->end(); ++parameter_iter){
 
-    CompoundType* cType = new CompoundType;
-    cType->baseType = node->basetype;
-    cType->objectClassName = node->identifier->name;
+      CompoundType* cType = new CompoundType;
+      cType->baseType = node->basetype;
+      cType->objectClassName = node->identifier->name;
 
-    compoundType->push_back((*cType));
+      compoundType->push_back((*cType));
+    }
   }
-
   CompoundType* type = new CompoundType;
   type->baseType = node->basetype;
   type->objectClassName = node->objectClassName;
@@ -151,14 +152,14 @@ void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
 
 void TypeCheck::visitParameterNode(ParameterNode* node) {
   // WRITEME: Replace with code if necessary
-  currentParameterOffset = currentParameterOffset + 4;
+  // currentParameterOffset = currentParameterOffset + 4;
 
-  CompoundType *compoundType;
-  compoundType->baseType = node->basetype;
-  compoundType->objectClassName = node->objectClassName;  
-  VariableInfo variableInfo = {(*compoundType), currentParameterOffset, 4};
+  // CompoundType *compoundType;
+  // compoundType->baseType = node->basetype;
+  // compoundType->objectClassName = node->objectClassName;  
+  // VariableInfo variableInfo = {(*compoundType), currentParameterOffset, 4};
 
-  (*currentVariableTable)[node->identifier->name] = variableInfo;
+  // (*currentVariableTable)[node->identifier->name] = variableInfo;
 }
 
 void TypeCheck::visitReturnStatementNode(ReturnStatementNode* node) {
