@@ -91,7 +91,6 @@ void TypeCheck::visitClassNode(ClassNode* node) {
     classInfo->methods = currentMethodTable;
     classInfo->membersSize = node->declaration_list->size()*4;
   }
-  node->visit_children(this);
   (*classTable)[node->identifier_1->name] = (*classInfo);
 }
 
