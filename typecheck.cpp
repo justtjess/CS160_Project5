@@ -67,95 +67,112 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   // WRITEME: Replace with code if necessary
   classTable = new ClassTable;
   currentLocalOffset = 0;
-  currentParameterOffset = 12;
+  currentParameterOffset = 8;
+
 
   node->visit_children(this);
+
+  // std::list<ClassNode*>::iterator class_iter;
+  // std::list<MethodNode*>::iterator method_iter;
+  // std::list<DeclarationNode*>::iterator variable_iter;
+
+  // for(class_iter = node->class_list->begin(); class_iter != node->class_list->end(); ++class_iter){
+  //   ClassNode* classNode = (*class_iter);
+  //   visitClassNode(classNode);
+  //   for(method_iter = classNode->method_list->begin(); method_iter != classNode->method_list->end(); ++method_iter){
+  //     MethodNode* methodNode = (*method_iter);
+  //     visitMethodNode(methodNode);
+  //   }
+  //   for(variable_iter = classNode->declaration_list->begin(); variable_iter != classNode->declaration_list->end(); ++variable_iter){
+  //     DeclarationNode* declarationNode = (*variable_iter);
+  //     visitDeclarationNode(declarationNode);
+  //   }
+  // }
+
 }
 
 void TypeCheck::visitClassNode(ClassNode* node) {
   // WRITEME: Replace with code if necessary
   currentMethodTable = new MethodTable;
-  currentVariableTable = new VariableTable;
   ClassInfo* classInfo = new ClassInfo;
   currentClassName = node->identifier_1->name;
 
+
   if(node->identifier_2 == NULL){
     classInfo->superClassName = ""; 
-    classInfo->members = (*currentVariableTable);
-    classInfo->methods = currentMethodTable;
+    currentVariableTable = classInfo->members;
+    currentMethodTable = classInfo->methods;
     classInfo->membersSize = node->declaration_list->size()*4;
   }
   else{
     classInfo->superClassName = node->identifier_2->name;
-    classInfo->members = currentVariableTable;
-    classInfo->methods = currentMethodTable;
+    currentVariableTable = classInfo->members;
+    currentMethodTable = classInfo->methods;
     classInfo->membersSize = node->declaration_list->size()*4;
   }
+
   node->visit_children(this);
   (*classTable)[node->identifier_1->name] = (*classInfo);
 }
 
 void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
   // WRITEME: Replace with code if necessary
-  if(node->identifier_list){
-    std::list<IdentifierNode*>::iterator id_iter;
+  // std::list<IdentifierNode*>::iterator id_iter;
+  // CompoundType* compoundType = new CompoundType;
+  // VariableInfo* variableInfo = new VariableInfo;
 
-    for(id_iter = node->identifier_list->begin(); id_iter != node->identifier_list->end(); ++id_iter){  
-      
-      CompoundType* compoundType = new CompoundType;
-      compoundType->baseType = (*id_iter)->basetype;
-      compoundType->objectClassName = (*id_iter)->objectClassName;
-      
-      VariableInfo* variableInfo = new VariableInfo;
-      variableInfo->type = (*compoundType);
-      variableInfo->offset = currentLocalOffset - 4;
+  // for(id_iter = node->identifier_list->begin(); id_iter != node->identifier_list->end(); ++id_iter){  
+  //   compoundType->baseType = (*id_iter)->basetype;
+  //   compoundType->objectClassName = (*id_iter)->objectClassName;
 
-      (*currentVariableTable)[(*id_iter)->name] = (*variableInfo);
-    }
-      node->visit_children(this);
-  }
+  //   variableInfo->type = (*compoundType);
+  //   variableInfo->offset = currentLocalOffset - 4;
+  // }
+  if(node->identifier_list != NULL)
+    node->visit_children(this);
 }
 
 void TypeCheck::visitMethodNode(MethodNode* node) {
   // WRITEME: Replace with code if necessary
+
+  // std::list<CompoundType> *compoundType;
+  // std::list<ParameterNode*>::iterator parameter_iter;
+  // if(node->parameter_list != NULL){
+  //   // To make the parameter list for for Method Info
+  //   for(parameter_iter = node->parameter_list->begin(); parameter_iter != node->parameter_list->end(); ++parameter_iter){
+
+  //     CompoundType* cType = new CompoundType;
+  //     cType->baseType = (*parameter_iter)->basetype;
+  //     cType->objectClassName = (*parameter_iter)->identifier->name;
+  //     cType->size = 4;
+
+  //     compoundType->push_back((*cType));
+  //   }
+  //   node->visit_children(this);
+
+  //   CompoundType* type = new CompoundType;
+  //   type->baseType = node->type->basetype;
+  //   type->objectClassName = node->objectClassName;
+
+  //   int localsSize = (currentVariableTable->size() - node->parameter_list->size()) *4;
   
-  std::list<CompoundType> *compoundType;
-  std::list<ParameterNode*>::iterator parameter_iter;
-  if(node->parameter_list != NULL){
-    // To make the parameter list for for Method Info
-    for(parameter_iter = node->parameter_list->begin(); parameter_iter != node->parameter_list->end(); ++parameter_iter){
+  //   MethodInfo methodInfo = {(*type), currentVariableTable, compoundType, localsSize};
 
-      CompoundType* cType = new CompoundType;
-      cType->baseType = (*parameter_iter)->basetype;
-      cType->objectClassName = (*parameter_iter)->identifier->name;
 
-      compoundType->push_back((*cType));
-    }
-   
-    node->visit_children(this);
-
-    CompoundType* type = new CompoundType;
-    type->baseType = node->type->basetype;
-    type->objectClassName = node->objectClassName;
-
-    int localsSize = (currentVariableTable->size() - node->parameter_list->size()) *4;
+  //   (*currentMethodTable)[node->identifier->name] = methodInfo;
+  // }
   
-    MethodInfo methodInfo = {(*type), currentVariableTable, compoundType, localsSize};
-
-
-    (*currentMethodTable)[node->identifier->name] = methodInfo;
-  }
-  
-  else{
-    node->visit_children(this);
+  // else{
+  //   node->visit_children(this);
     
-    CompoundType* type = new CompoundType;
-    type->baseType = node->type->basetype;
-    type->objectClassName = node->objectClassName;
+  //   CompoundType* type = new CompoundType;
+  //   type->baseType = node->type->basetype;
+  //   type->objectClassName = node->objectClassName;
 
-    MethodInfo methodInfo = {(*type), currentVariableTable, compoundType, currentVariableTable->size() * 4};
-    (*currentMethodTable)[node->identifier->name] = methodInfo;
-    }
+  //   MethodInfo methodInfo = {(*type), currentVariableTable, compoundType, currentVariableTable->size() * 4};
+  //   (*currentMethodTable)[node->identifier->name] = methodInfo;
+
+  // }
 }
 
 void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
@@ -164,17 +181,17 @@ void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
 
 void TypeCheck::visitParameterNode(ParameterNode* node) {
   // WRITEME: Replace with code if necessary
-  currentParameterOffset = currentParameterOffset + 4;
-  currentVariableTable = new VariableTable;
+  // currentParameterOffset = currentParameterOffset + 4;
+  // currentVariableTable = new VariableTable;
 
-  CompoundType *compoundType;
-  compoundType->baseType = node->basetype;
-  compoundType->objectClassName = node->objectClassName;  
+  // CompoundType *compoundType;
+  // compoundType->baseType = node->basetype;
+  // compoundType->objectClassName = node->objectClassName;  
   
-  VariableInfo variableInfo = {(*compoundType), currentParameterOffset, 4};
+  // VariableInfo variableInfo = {(*compoundType), currentParameterOffset, 4};
 
-  (*currentVariableTable)[node->identifier->name] = variableInfo;
-  node->visit_children(this);
+  // (*currentVariableTable)[node->identifier->name] = variableInfo;
+  // node->visit_children(this);
 
 }
 
@@ -294,15 +311,16 @@ void TypeCheck::visitIdentifierNode(IdentifierNode* node) {
   // WRITEME: Replace with code if necessary
   // // WHAT THE HELL ARE THE OFFSET AND SIZE!?
 
-   CompoundType* compoundType = new CompoundType;
-   compoundType->baseType = node->basetype;
-   compoundType->objectClassName = node->objectClassName;
+  CompoundType* compoundType = new CompoundType;
+  compoundType->baseType = node->basetype;
+  compoundType->objectClassName = node->objectClassName;
 
-   VariableInfo* variableInfo = new VariableInfo;
-   variableInfo->type = (*compoundType);
-   variableInfo->offset = currentLocalOffset - 4;
+  VariableInfo* variableInfo = new VariableInfo;
+  variableInfo->type = (*compoundType);
+  variableInfo->offset = currentLocalOffset - 4;
+  variableInfo->size = 4;
 
-   (*currentVariableTable)[node->name] = (*variableInfo);
+  (*currentVariableTable)[node->name] = (*variableInfo);
 }
 
 void TypeCheck::visitIntegerNode(IntegerNode* node) {
