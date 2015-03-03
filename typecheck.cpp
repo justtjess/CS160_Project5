@@ -188,10 +188,9 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
       VariableInfo* varInfo = new VariableInfo;
       varInfo->type = (*compoundType);
       if(inClass == true){
-        std::cout << "here";
-        currentParameterOffset = 1000;
-        currentLocalOffset = 100;
-        currentMemberOffset = currentMemberOffset + 4;
+        //std::cout << "here";
+        currentLocalOffset = currentLocalOffset - 4;
+        //currentMemberOffset = currentMemberOffset + 4;
       }
       else
         currentLocalOffset = currentLocalOffset - 4;
