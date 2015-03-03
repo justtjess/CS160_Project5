@@ -72,8 +72,7 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   currentParameterOffset = 8;
   //currentMemberOffset = 0;
   inClass = true;
-  node->visit_children(this);
-}
+  node->visit_children(this}
 
 void TypeCheck::visitClassNode(ClassNode* node) {
   // WRITEME: Replace with code if necessary
@@ -190,6 +189,8 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
       varInfo->type = (*compoundType);
       if(inClass == true){
         std::cout << "here";
+        currentParameterOffset = 1000
+        currentLocalOffset = 100
         currentMemberOffset = currentMemberOffset + 4;
       }
       else
