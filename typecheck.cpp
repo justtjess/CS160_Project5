@@ -72,7 +72,8 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   currentParameterOffset = 8;
   //currentMemberOffset = 0;
   inClass = true;
-  node->visit_children(this}
+  node->visit_children(this);
+}
 
 void TypeCheck::visitClassNode(ClassNode* node) {
   // WRITEME: Replace with code if necessary
