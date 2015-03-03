@@ -21,7 +21,7 @@ ProgramNode::ProgramNode(std::list<ClassNode*>* class_list) {
 
 // Visit Children method for Class AST node
 void ClassNode::visit_children(Visitor* v) {
-  identifier_1->accept(v);
+  //identifier_1->accept(v);
   if (this->identifier_2) {
     this->identifier_2->accept(v);
   }
@@ -49,7 +49,7 @@ ClassNode::ClassNode(IdentifierNode*  identifier_1, IdentifierNode*  identifier_
 
 // Visit Children method for Method AST node
 void MethodNode::visit_children(Visitor* v) {
-  identifier->accept(v);
+  //identifier->accept(v);
   if (this->parameter_list) {
     for(std::list<ParameterNode*>::iterator iter = this->parameter_list->begin();
         iter != this->parameter_list->end(); iter++) {

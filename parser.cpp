@@ -1801,17 +1801,17 @@ yyreduce:
 
   case 60:
 #line 203 "parser.y"
-    { (yyval.expression_ptr) = new IntegerLiteralNode(new IntegerNode((yyvsp[(1) - (1)].base_int))); ;}
+    {  (yyval.expression_ptr) = new IntegerLiteralNode(new IntegerNode((yyvsp[(1) - (1)].base_int))); (yyval.expression_ptr)->basetype = bt_integer;;}
     break;
 
   case 61:
 #line 204 "parser.y"
-    { (yyval.expression_ptr) = new BooleanLiteralNode(new IntegerNode((yyvsp[(1) - (1)].base_int))); ;}
+    {  (yyval.expression_ptr) = new BooleanLiteralNode(new IntegerNode((yyvsp[(1) - (1)].base_int))); (yyval.expression_ptr)->basetype = bt_boolean;;}
     break;
 
   case 62:
 #line 205 "parser.y"
-    { (yyval.expression_ptr) = new BooleanLiteralNode(new IntegerNode((yyvsp[(1) - (1)].base_int))); ;}
+    {  (yyval.expression_ptr) = new BooleanLiteralNode(new IntegerNode((yyvsp[(1) - (1)].base_int))); (yyval.expression_ptr)->basetype = bt_boolean;;}
     break;
 
   case 63:
