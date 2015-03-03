@@ -172,7 +172,10 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
       VariableInfo* varInfo = new VariableInfo;
       varInfo->type = (*compoundType);
       if(inClass == true){
+        int temp = currentLocalOffset;
         currentMemberOffset = currentMemberOffset + 4;
+        currentLocalOffset = currentMemberOffset;
+        currentLocalOffset = temp;
       }
       else
         currentLocalOffset = currentLocalOffset - 4;
