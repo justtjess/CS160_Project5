@@ -9,7 +9,7 @@
 #include <sstream>
 
 // Enumaration of all base types in the language
-typedef enum {bt_integer, bt_boolean, bt_none, bt_object} BaseType;
+typedef enum {bt_boolean , bt_integer, bt_none, bt_object} BaseType;
 
 // Forward declarations of AST Node classes
 class ProgramNode;
