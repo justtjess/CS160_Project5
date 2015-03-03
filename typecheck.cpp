@@ -59,6 +59,8 @@ void typeError(TypeErrorCode code) {
   exit(1);
 }
 
+bool inClass;
+
 // TypeCheck Visitor Functions: These are the functions you will
 // complete to build the symbol table and type check the program.
 // Not all functions must have code, many may be left empty.
@@ -69,7 +71,7 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   currentLocalOffset = 0;
   currentParameterOffset = 8;
   currentMemberOffset = 0;
-
+  inClass = true
   node->visit_children(this);
 }
 
@@ -97,6 +99,7 @@ void TypeCheck::visitClassNode(ClassNode* node) {
 
 void TypeCheck::visitMethodNode(MethodNode* node) {
   // WRITEME: Replace with code if necessary
+  inClass = false;
   std::list<CompoundType> *param;
   std::list<ParameterNode*>::iterator parameter_iter;
   MethodInfo* methInfo = new MethodInfo;
@@ -178,7 +181,10 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
 
       VariableInfo* varInfo = new VariableInfo;
       varInfo->type = (*compoundType);
-      currentLocalOffset = currentLocalOffset - 4;
+      if(inClass = true)
+        currentMemberOffset = currentMemberOffset + 4;
+      else
+        currentLocalOffset = currentLocalOffset - 4;
       varInfo->offset = currentLocalOffset;
       varInfo->size = 4;
       (*currentVariableTable)[(*id_iter)->name] = (*varInfo);
