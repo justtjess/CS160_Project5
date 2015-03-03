@@ -70,7 +70,7 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   classTable = new ClassTable;
   currentLocalOffset = 0;
   currentParameterOffset = 8;
-  currentMemberOffset = 0;
+  //currentMemberOffset = 0;
   inClass = true;
   node->visit_children(this);
 }
@@ -88,7 +88,7 @@ void TypeCheck::visitClassNode(ClassNode* node) {
   MethodTable* methTable = new MethodTable;
 
   currentLocalOffset = 0;
-  currentMemberOffset = 0;
+ // currentMemberOffset = 0;
 
   classInfo->members = varTable;
   classInfo->methods = methTable;
