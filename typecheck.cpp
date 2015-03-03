@@ -60,6 +60,7 @@ void typeError(TypeErrorCode code) {
 }
 
 bool inClass;
+int temp;
 
 // TypeCheck Visitor Functions: These are the functions you will
 // complete to build the symbol table and type check the program.
@@ -144,7 +145,10 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
 
 void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
   // WRITEME: Replace with code if necessary
+  temp = currentLocalOffset;
   node->visit_children(this);
+  currentLocalOffset = temp;
+
 }
 
 void TypeCheck::visitParameterNode(ParameterNode* node) {
@@ -172,10 +176,8 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
       VariableInfo* varInfo = new VariableInfo;
       varInfo->type = (*compoundType);
       if(inClass == true){
-        int temp = currentLocalOffset;
         currentMemberOffset = currentMemberOffset + 4;
         currentLocalOffset = currentMemberOffset;
-        currentLocalOffset = temp;
       }
       else
         currentLocalOffset = currentLocalOffset - 4;
