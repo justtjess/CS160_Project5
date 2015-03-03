@@ -309,6 +309,7 @@ void TypeCheck::visitIdentifierNode(IdentifierNode* node) {
 
 void TypeCheck::visitIntegerNode(IntegerNode* node) {
   // WRITEME: Replace with code if necessary
+  node->basetype = bt_integer;
 }
 
 
