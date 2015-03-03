@@ -71,7 +71,7 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   classTable = new ClassTable;
   currentLocalOffset = 0;
   currentParameterOffset = 8;
-  //currentMemberOffset = 0;
+  currentMemberOffset = -4;
   inClass = true;
   node->visit_children(this);
 }
