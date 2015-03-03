@@ -170,7 +170,7 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
   if(node->identifier_list != NULL){
     for(id_iter = node->identifier_list->begin(); id_iter != node->identifier_list->end(); ++id_iter){
       CompoundType* compoundType = new CompoundType;
-      compoundType->baseType = (*id_iter)->basetype;
+      compoundType->baseType = (*id_iter)->bt_boolean;
       compoundType->objectClassName = (*id_iter)->objectClassName;
 
       VariableInfo* varInfo = new VariableInfo;
