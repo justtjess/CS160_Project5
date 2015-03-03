@@ -138,23 +138,6 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
   methInfo->returnType = (*type);
   currentMemberOffset = currentMemberOffset + 4;
 
-  if(node->parameter_list != NULL){
-    // Initiate Compound List for parameters
-    for(parameter_iter = node->parameter_list->begin(); parameter_iter != node->parameter_list->end(); ++parameter_iter){
-
-      CompoundType* cType = new CompoundType;
-      cType->baseType = (*parameter_iter)->basetype;
-      cType->objectClassName = (*parameter_iter)->identifier->name;
-
-      param->push_back((*cType));
-    }
-    methInfo->parameters = param;
-    methInfo->localsSize = (currentVariableTable->size() - node->parameter_list->size()) * 4;
-  }
-  else{
-    methInfo->localsSize = currentVariableTable->size() * 4;
-  }
-
   (*currentMethodTable)[node->identifier->name] = (*methInfo);
   inClass = true;
 }
@@ -189,9 +172,7 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
       VariableInfo* varInfo = new VariableInfo;
       varInfo->type = (*compoundType);
       if(inClass == true){
-        //std::cout << "here";
-        currentLocalOffset = currentLocalOffset - 4;
-        //currentMemberOffset = currentMemberOffset + 4;
+        currentMemberOffset = currentMemberOffset + 4;
       }
       else
         currentLocalOffset = currentLocalOffset - 4;
