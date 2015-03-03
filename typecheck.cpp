@@ -87,6 +87,9 @@ void TypeCheck::visitClassNode(ClassNode* node) {
   VariableTable* varTable = new VariableTable;
   MethodTable* methTable = new MethodTable;
 
+  currentLocalOffset = 0;
+  currentMemberOffset = 0;
+
   classInfo->members = varTable;
   classInfo->methods = methTable;
 
@@ -105,6 +108,7 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
   MethodInfo* methInfo = new MethodInfo;
 
   VariableTable* variableTable = new VariableTable;
+  currentLocalOffset = 0;
   currentVariableTable = variableTable;
   methInfo->variables = variableTable;
 
