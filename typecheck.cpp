@@ -78,7 +78,6 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
 void TypeCheck::visitClassNode(ClassNode* node) {
   // WRITEME: Replace with code if necessary
   ClassInfo* classInfo = new ClassInfo;
-  inClass = true;
 
   if(node->identifier_2 != NULL)
     classInfo->superClassName = node->identifier_2->name;
@@ -157,6 +156,7 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
   }
 
   (*currentMethodTable)[node->identifier->name] = (*methInfo);
+  inClass = true;
 }
 
 void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
