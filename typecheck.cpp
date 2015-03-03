@@ -107,6 +107,8 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
   std::list<ParameterNode*>::iterator parameter_iter;
   MethodInfo* methInfo = new MethodInfo;
 
+  currentParameterOffset = 8;
+
   VariableTable* variableTable = new VariableTable;
   currentVariableTable = variableTable;
   methInfo->variables = variableTable;
@@ -166,6 +168,7 @@ void TypeCheck::visitParameterNode(ParameterNode* node) {
   CompoundType* comType = new CompoundType;
   comType->baseType = node->basetype;
   comType->objectClassName = node->objectClassName;
+  currentParameterOffset = currentParameterOffset + 4;
 
   VariableInfo varInfo = {(*comType),currentParameterOffset, 4};
 
