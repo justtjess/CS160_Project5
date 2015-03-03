@@ -88,7 +88,7 @@ void TypeCheck::visitClassNode(ClassNode* node) {
   MethodTable* methTable = new MethodTable;
 
   currentLocalOffset = 0;
-  //currentMemberOffset = 0;
+  currentMemberOffset = 0;
 
   classInfo->members = varTable;
   classInfo->methods = methTable;
