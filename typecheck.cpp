@@ -73,6 +73,36 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
   currentParameterOffset = 8;
   currentMemberOffset = -4;
   node->visit_children(this);
+  
+  // Error: whether Main class has a main method
+  std::map<std::basic_string<char>, ClassInfo>::iterator c_iter = classTable->find("Main");
+  if(c_iter != classTable->end()){
+    ClassInfo c_info = c_iter->second;
+    if(c_info.membersSize == 0){
+        MethodTable* m_table = c_info.methods;
+        std::map<std::basic_string<char>, MethodInfo>::iterator m_iter = m_table->find("main");
+        if(m_iter == m_table->end()){
+            // Error: no main method
+            typeError(no_main_method);
+        }
+        else{
+            MethodInfo m_info = m_iter->second;
+            CompoundType returnType = m_info.returnType;
+            if(returnType.baseType != bt_none){
+                // Error: "main" method has incorrect signature (doesn't return bt_none)
+                typeError(main_method_incorrect_signature);
+            }
+        }
+    }
+    else{   
+        // Error: Main Class has members NOT DONE!!
+        //typeError(main_class_members_present);
+    }
+  }
+  else{
+    // Error: no Main Class
+    typeError(no_main_class);
+  }
 }
 
 void TypeCheck::visitClassNode(ClassNode* node) {
@@ -98,9 +128,16 @@ void TypeCheck::visitClassNode(ClassNode* node) {
 
   currentVariableTable = varTable;
   currentMethodTable = methTable;  
-
-  (*classTable)[node->identifier_1->name] = (*classInfo);
+  
+  int* memberSize = &(classInfo->membersSize);
+  
   node->visit_children(this);
+
+  classInfo->membersSize = currentVariableTable->size();
+  (*classTable)[node->identifier_1->name] = (*classInfo);
+
+  // Error: undefined_method
+  
 }
 
 void TypeCheck::visitMethodNode(MethodNode* node) {
