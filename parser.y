@@ -115,9 +115,9 @@ Members : Members Member { $$ = $1; $$->push_back($2); }
 
 Member : Type T_ID { $$ = new DeclarationNode($1,new std::list<IdentifierNode*>(1, new IdentifierNode($2))); }
 
-Type : T_INT { $$ = new IntegerTypeNode(); }
-      | T_BOOL { $$ = new BooleanTypeNode(); }
-      | T_ID { $$ = new ObjectTypeNode(new IdentifierNode($1)); }
+Type : T_INT { $$ = new IntegerTypeNode(); $$->basetype = bt_integer;}
+      | T_BOOL { $$ = new BooleanTypeNode(); $$->basetype = bt_boolean;}
+      | T_ID { $$ = new ObjectTypeNode(new IdentifierNode($1)); $$->basetype = bt_object;}
       ;
 
 Methods : Method Methods { $$ = $2; $$->push_front($1); }
@@ -207,7 +207,7 @@ Expressions : Expressions T_PLUS Expressions { $$ = new PlusNode($1, $3); }
       | T_NEW T_ID T_OPENPAREN Arguments T_CLOSEPAREN { $$ = new NewNode(new IdentifierNode($2), $4); }
       ;
 
-ReturnType : T_NONE { $$ = new NoneNode; }
+ReturnType : T_NONE { $$ = new NoneNode; $$->basetype = bt_none; }
       | Type { $$ = $1; astRoot = $$; }
       ;
 
