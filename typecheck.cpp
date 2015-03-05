@@ -135,8 +135,6 @@ void TypeCheck::visitClassNode(ClassNode* node) {
 
   classInfo->membersSize = currentVariableTable->size();
   (*classTable)[node->identifier_1->name] = (*classInfo);
-
-  // Error: undefined_method
   
 }
 
@@ -235,6 +233,8 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
 
 void TypeCheck::visitReturnStatementNode(ReturnStatementNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
+  
 }
 
 void TypeCheck::visitAssignmentNode(AssignmentNode* node) {
@@ -260,46 +260,61 @@ void TypeCheck::visitPrintNode(PrintNode* node) {
 
 void TypeCheck::visitPlusNode(PlusNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
+
+  if(node->expression_1->basetype != bt_integer){
+    typeError()
+  }
 }
 
 void TypeCheck::visitMinusNode(MinusNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitTimesNode(TimesNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitDivideNode(DivideNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitLessNode(LessNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitLessEqualNode(LessEqualNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitEqualNode(EqualNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitAndNode(AndNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitOrNode(OrNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitNotNode(NotNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitNegationNode(NegationNode* node) {
   // WRITEME: Replace with code if necessary
+  node->visit_children(this);
 }
 
 void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
