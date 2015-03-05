@@ -1,0 +1,15 @@
+Main {
+
+
+    main() -> none {
+        boolean local0
+        integer i0
+        integer i1
+        
+        i0 = i1 + true
+
+    }
+
+
+}
+
