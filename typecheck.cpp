@@ -512,26 +512,35 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                 // Looked through all superClasses
                 typeError(undefined_method);
               }
-              m_table = c_info.methods;
-              if(m_table->find(node->identifier_2->name) == m_table->end()){
-                // move onto the next superClass
-                c_iter = classTable->find(superName);
-                superName = c_iter->second.superClassName;
-              }
-              else{
-                found = true;
-                m_info = (m_table->find(node->identifier_2->name))->second;
-                std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
-                std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-                //check size of the list
-                if(m_info.parameters->size() != node->expression_list->size()){
-                  typeError(argument_number_mismatch);
+              if(classTable->find(superName) != classTable->end()){
+                m_table = classTable->find(superName)->second.methods;
+
+                if(m_table->find(node->identifier_2->name) == m_table->end()){
+                  // move onto the next superClass
+                  c_iter = classTable->find(superName);
+                  superName = c_iter->second.superClassName;
                 }
-                //match types
-                for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-                  if(m_param->baseType != (*n_param)->basetype){
-                  // Error: Parameters dont have the same types
-                    typeError(argument_type_mismatch);
+                else{
+                  found = true;
+                  if(node->expression_list != NULL && m_info.parameters != NULL){
+                    m_info = (m_table->find(node->identifier_2->name))->second;
+                    std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+                    std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+                    //match types
+                    for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+                      if(m_param->baseType != (*n_param)->basetype){
+                      // Error: Parameters dont have the same types
+                        typeError(argument_type_mismatch);
+                      }
+                    }
+                  }
+                  else if(node->expression_list == NULL && m_info.parameters == NULL){
+                    std:: cout << "both list are NULL\n";
+                  }
+                  else{
+                    // One list is NULL and other is not 
+                    std:: cout << "different num of arguments\n";
+                    // typeError(argument_number_mismatch);
                   }
                 }
               }
@@ -624,20 +633,22 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
   }
   else{
     // id_1 = method
-    m_iter = currentMethodTable->find(node->identifier_2->name);
+    m_iter = currentMethodTable->find(node->identifier_1->name);
     if(m_iter != currentMethodTable->end()){
       // do parameters
       m_info = m_iter->second;
-      std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
-      std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-      //check size of the list
-      if(m_info.parameters->size() != node->expression_list->size()){
-              typeError(argument_number_mismatch);
-      }
-      for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-        if(m_param->baseType != (*n_param)->basetype){
-        // Error: Parameters dont have the same types
-          typeError(argument_type_mismatch);
+      if(m_info.parameters != NULL && node->expression_list != NULL){
+        std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+        std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+        //check size of the list
+        if(m_info.parameters->size() != node->expression_list->size()){
+                typeError(argument_number_mismatch);
+        }
+        for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+          if(m_param->baseType != (*n_param)->basetype){
+          // Error: Parameters dont have the same types
+            typeError(argument_type_mismatch);
+          }
         }
       }
     }
