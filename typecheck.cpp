@@ -129,13 +129,12 @@ void TypeCheck::visitClassNode(ClassNode* node) {
   currentVariableTable = varTable;
   currentMethodTable = methTable;  
   
-  int* memberSize = &(classInfo->membersSize);
+  //  int* memberSize = &(classInfo->membersSize);
   
+  (*classTable)[node->identifier_1->name] = (*classInfo);
   node->visit_children(this);
 
-  classInfo->membersSize = varTable->size();
-  (*classTable)[node->identifier_1->name] = (*classInfo);
-  
+  (*classTable)[node->identifier_1->name].membersSize = (*classTable)[node->identifier_1->name].members->size() * 4;  
 }
 
 void TypeCheck::visitMethodNode(MethodNode* node) {
