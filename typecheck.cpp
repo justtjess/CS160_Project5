@@ -534,12 +534,14 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                       }
                     }
                   }
-                  else if(node->expression_list == NULL && m_info.parameters == NULL){
-                    std:: cout << "both list are NULL\n";
+                  else if(node->expression_list == NULL)
+                    std:: cout << "here2\n";
+                  else if(m_info.parameters == NULL){
+                    std:: cout << "here1\n";
                   }
                   else{
-                    // One list is NULL and other is not 
-                    std:: cout << "different num of arguments\n";
+                    // One list is NULL and other is not
+                    std:: cout << "different num of arguments: " << m_info.parameters->size() << "\n";
                     // typeError(argument_number_mismatch);
                   }
                 }
