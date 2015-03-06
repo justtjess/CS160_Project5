@@ -699,7 +699,7 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
   v_iter = currentVariableTable->find(node->identifier->name);
   if(v_iter == currentVariableTable->end()){
     c_iter = classTable->find(currentClassName);
-    if(c_iter != classTable->end()){
+//    if(c_iter != classTable->end()){
     // Check Class VariableTable
       c_info = c_iter->second;
       v_table = c_info.members;
@@ -733,11 +733,11 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
         node->basetype = v_info.type.baseType;
         node->objectClassName = v_info.type.objectClassName;
       }
-    }
-    else{
-    // Can't find currentClassTable in ClassTable
-      //typeError(undefined_class); 
-    }
+    // }
+    // else{
+    // // Can't find currentClassTable in ClassTable
+    //   //typeError(undefined_class); 
+    // }
   }
   else{
     v_info = v_iter->second;
