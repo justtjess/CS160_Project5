@@ -108,6 +108,7 @@ void TypeCheck::visitProgramNode(ProgramNode* node) {
 void TypeCheck::visitClassNode(ClassNode* node) {
   // WRITEME: Replace with code if necessary
   //std::cout << "in class\n";
+  currentClassName = node->identifier_1->name;
   inClass = true;
   currentLocalOffset = 0;
   currentParameterOffset = 8;
@@ -405,13 +406,6 @@ void TypeCheck::visitOrNode(OrNode* node) {
   node->visit_children(this);
   std::cout << "or\n";
 
-  if(node->expression_2->basetype == bt_boolean)
-    std::cout << " bool\n";
-  if(node->expression_2->basetype == bt_integer)
-    std::cout << " int\n";
-  if(node->expression_2->basetype == bt_object)
-    std::cout << " object\n";
-
   if(node->expression_1->basetype != bt_boolean){
     typeError(expression_type_mismatch);
   }
@@ -427,6 +421,13 @@ void TypeCheck::visitNotNode(NotNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
   std::cout << "not\n";
+
+  if(node->expression->basetype == bt_boolean)
+    std::cout << " bool\n";
+  if(node->expression->basetype == bt_integer)
+    std::cout << " int\n";
+  if(node->expression->basetype == bt_object)
+    std::cout << " object\n";
 
   if(node->expression->basetype != bt_boolean){
     typeError(expression_type_mismatch);
@@ -699,7 +700,7 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
   v_iter = currentVariableTable->find(node->identifier->name);
   if(v_iter == currentVariableTable->end()){
     c_iter = classTable->find(currentClassName);
-//    if(c_iter != classTable->end()){
+    if(c_iter != classTable->end()){
     // Check Class VariableTable
       c_info = c_iter->second;
       v_table = c_info.members;
@@ -733,11 +734,11 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
         node->basetype = v_info.type.baseType;
         node->objectClassName = v_info.type.objectClassName;
       }
-    // }
-    // else{
-    // // Can't find currentClassTable in ClassTable
-    //   //typeError(undefined_class); 
-    // }
+    }
+    else{
+    // Can't find currentClassTable in ClassTable
+      //typeError(undefined_class); 
+    }
   }
   else{
     v_info = v_iter->second;
