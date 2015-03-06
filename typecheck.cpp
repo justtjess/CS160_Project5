@@ -161,16 +161,16 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
     for(parameter_iter = node->parameter_list->begin(); parameter_iter != node->parameter_list->end(); ++parameter_iter){
 
       CompoundType* cType = new CompoundType;
-      cType->baseType = (*parameter_iter)->identifier->basetype;
+      cType->baseType = (*parameter_iter)->type->basetype;
       cType->objectClassName = (*parameter_iter)->identifier->objectClassName;
-      if((*parameter_iter)->identifier->basetype == bt_boolean)
-        std::cout << " bool\n";
-      if((*parameter_iter)->identifier->basetype == bt_integer)
-        std::cout << " int\n";
-      if((*parameter_iter)->identifier->basetype == bt_object)
-        std::cout << " object\n";       
-      if((*parameter_iter)->identifier->basetype == bt_none)
-        std::cout << " none\n"; 
+      // if(cType->baseType == bt_boolean)
+      //   std::cout << " bool\n";
+      // if(cType->baseType == bt_integer)
+      //   std::cout << " int\n";
+      // if(cType->baseType == bt_object)
+      //   std::cout << " object\n";       
+      // if(cType->baseType == bt_none)
+      //   std::cout << " none\n"; 
       param->push_back((*cType));
     }
     methInfo->parameters = param;
@@ -294,6 +294,7 @@ void TypeCheck::visitPlusNode(PlusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
   std::cout << "plus\n";
+  
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -310,6 +311,7 @@ void TypeCheck::visitMinusNode(MinusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
     std::cout << "minus\n";
+
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -325,6 +327,7 @@ void TypeCheck::visitTimesNode(TimesNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this); 
   std::cout << "times\n";
+
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -340,6 +343,7 @@ void TypeCheck::visitDivideNode(DivideNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
   std::cout << "divide\n";
+
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -354,7 +358,8 @@ void TypeCheck::visitDivideNode(DivideNode* node) {
 void TypeCheck::visitLessNode(LessNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-std::cout << "less\n";
+  std::cout << "less\n";
+
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -369,7 +374,8 @@ std::cout << "less\n";
 void TypeCheck::visitLessEqualNode(LessEqualNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-std::cout << "lessequal\n";
+  std::cout << "lessequal\n";
+
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -395,9 +401,9 @@ void TypeCheck::visitEqualNode(EqualNode* node) {
 void TypeCheck::visitAndNode(AndNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
+  std::cout << "and\n";
 
   if(node->expression_1->basetype != bt_boolean){
-      std::cout << "and\n";
     typeError(expression_type_mismatch);
   }
   else{
@@ -429,12 +435,12 @@ void TypeCheck::visitNotNode(NotNode* node) {
   node->visit_children(this);
   std::cout << "not\n";
 
-  if(node->expression->basetype == bt_boolean)
-    std::cout << " bool\n";
-  if(node->expression->basetype == bt_integer)
-    std::cout << " int\n";
-  if(node->expression->basetype == bt_object)
-    std::cout << " object\n";
+  // if(node->expression->basetype == bt_boolean)
+  //   std::cout << " bool\n";
+  // if(node->expression->basetype == bt_integer)
+  //   std::cout << " int\n";
+  // if(node->expression->basetype == bt_object)
+  //   std::cout << " object\n";
 
   if(node->expression->basetype != bt_boolean){
     typeError(expression_type_mismatch);
@@ -480,40 +486,9 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
   if(m_iter != currentMethodTable->end()){
   // Method exist in local MethodTable
     m_info = m_iter->second;
-    if(m_info.parameters->size() == node->expression_list->size()){
+    if((m_info.parameters != NULL || node->expression_list != NULL) && m_info.parameters->size() == node->expression_list->size()){
         std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
         std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-
-        if((*n_param)->basetype == bt_boolean)
-          std::cout << " bool\n";
-        if((*n_param)->basetype == bt_integer)
-          std::cout << " int\n";
-        if((*n_param)->basetype == bt_object)
-          std::cout << " object\n";    
-
-        if(m_param->baseType == bt_boolean)
-          std::cout << " bool\n";
-        if(m_param->baseType == bt_integer)
-          std::cout << " int\n";
-        if(m_param->baseType == bt_object)
-          std::cout << " object\n";
-
-        ++m_param; ++n_param;
-        if((*n_param)->basetype == bt_boolean)
-          std::cout << " bool\n";
-        if((*n_param)->basetype == bt_integer)
-          std::cout << " int\n";
-        if((*n_param)->basetype == bt_object)
-          std::cout << " object\n";    
-
-        if(m_param->baseType == bt_boolean)
-          std::cout << " bool\n";
-        if(m_param->baseType == bt_integer)
-          std::cout << " int\n";
-        if(m_param->baseType == bt_object)
-          std::cout << " object\n";         
-        m_param = m_info.parameters->begin();
-        n_param = node->expression_list->begin();
 
         for(; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
             if(m_param->baseType != (*n_param)->basetype){
@@ -600,6 +575,19 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           
                   for(; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
                       if(m_param->baseType != (*n_param)->basetype)
+                        if((*n_param)->basetype == bt_boolean)
+                          std::cout << " bool\n";
+                        if((*n_param)->basetype == bt_integer)
+                          std::cout << " int\n";
+                        if((*n_param)->basetype == bt_object)
+                          std::cout << " object\n";    
+
+                        if(m_param->baseType == bt_boolean)
+                          std::cout << " bool\n";
+                        if(m_param->baseType == bt_integer)
+                          std::cout << " int\n";
+                        if(m_param->baseType == bt_object)
+                          std::cout << " object\n";    
                       // Error: Parameters dont have the same types
                           typeError(argument_type_mismatch);
                   }
@@ -824,6 +812,7 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
 
 void TypeCheck::visitIntegerLiteralNode(IntegerLiteralNode* node) {
   // WRITEME: Replace with code if necessary
+  std::cout << "int literal\n";
   node->basetype = bt_integer;
 }
 
