@@ -522,6 +522,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                 }
                 else{
                   found = true;
+                  m_info = m_table->find(node->identifier_2->name)->second;
                   if(node->expression_list != NULL && m_info.parameters != NULL){
                     m_info = (m_table->find(node->identifier_2->name))->second;
                     std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
