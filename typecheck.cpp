@@ -294,7 +294,7 @@ void TypeCheck::visitPlusNode(PlusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
   std::cout << "plus\n";
-  
+
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -466,6 +466,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
   node->visit_children(this);
   std::cout << "methodCall\n";
   
+
   std::map<std::basic_string<char>, ClassInfo>::iterator c_iter;
   std::map<std::basic_string<char>, MethodInfo>::iterator m_iter;
   std::map<std::basic_string<char>, VariableInfo>::iterator v_iter;
@@ -475,137 +476,211 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
   MethodInfo m_info;
   VariableInfo v_info;
   MethodTable* m_table;
+  VariableTable* v_table;
   std::string superName;
-  ClassInfo super_c_info;
-  MethodTable* super_m_table;
   bool found = false;
-  std::string className;
-  
-// CHECKING METHOD
-  m_iter = currentMethodTable->find(node->identifier_1->name);
-  if(m_iter != currentMethodTable->end()){
-  // Method exist in local MethodTable
-    m_info = m_iter->second;
-    if((m_info.parameters != NULL || node->expression_list != NULL) && m_info.parameters->size() == node->expression_list->size()){
+
+  if(node->identifier_2 != NULL){
+  // id_1 = variable, id_2 = method
+    if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
+      // look for location of method
+      if(currentMethodTable->find(node->identifier_2->name) != currentMethodTable->end()){
+        // do parameters
+        m_info = (currentMethodTable->find(node->identifier_2->name))->second;
         std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
         std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-
-        for(; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-            if(m_param->baseType != (*n_param)->basetype){
-                if((*n_param)->basetype == bt_boolean)
-                  std::cout << " bool\n";
-                if((*n_param)->basetype == bt_integer)
-                  std::cout << " int\n";
-                if((*n_param)->basetype == bt_object)
-                  std::cout << " object\n";    
-
-                if(m_param->baseType == bt_boolean)
-                  std::cout << " bool\n";
-                if(m_param->baseType == bt_integer)
-                  std::cout << " int\n";
-                if(m_param->baseType == bt_object)
-                  std::cout << " object\n";                        
-            // Error: Parameters dont have the same types
-                typeError(argument_type_mismatch);
-            }
+        //check size of the list
+        if(m_info.parameters->size() != node->expression_list->size()){
+                typeError(argument_number_mismatch);
         }
-    }
-    else{
-      // Error: Wrong number of parameters
-      typeError(argument_number_mismatch);
-    }
-  }
-  else{    
-  // CHECKING VARIABLE  
-    v_iter = currentVariableTable->find(node->identifier_1->name);
-    if(v_iter != currentVariableTable->end()){
-        v_info = v_iter->second;
-        className = v_info.type.objectClassName;
-        c_iter = classTable->find(className);
-        if(c_iter != classTable->end()){
-          c_info = c_iter->second;
-          m_table = c_info.methods;
-          m_iter = m_table->find(node->identifier_2->name);
-          if(m_iter != m_table->end()){
-          // Method found on first try
-            m_info = m_iter->second;
-              if(m_info.parameters->size() == node->expression_list->size()){
-                  std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
-                  std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-                  for(; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-                      if(m_param->baseType == bt_boolean)
-                        std::cout << " bool\n";
-                      if(m_param->baseType == bt_integer)
-                        std::cout << " int\n";
-                      if(m_param->baseType == bt_object)
-                        std::cout << " object\n";
-                      if(m_param->objectClassName != "")
-                        std::cout << m_param->objectClassName << "\n";
-                      if(m_param->baseType != (*n_param)->basetype)
-                      // Error: Parameters dont have the same types
-                          typeError(argument_type_mismatch);
-                  }
-              }
+        for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+          if(m_param->baseType != (*n_param)->basetype){
+          // Error: Parameters dont have the same types
+            typeError(argument_type_mismatch);
           }
-          else{ 
-          // Can't find the method in that Object Class's method table
-          // Need to check super classes
-              superName = c_info.superClassName;
-              while (!found){
-                  super_c_iter = classTable->find(superName);
-                  super_c_info = super_c_iter->second;
-                  super_m_table = super_c_info.methods;
-                  super_m_iter = super_m_table->find(node->identifier_2->name);
-                  if(superName == ""){
-                  // Error: Method is not defined
-                      typeError(undefined_method);
-                  }
-                  if(super_m_iter == super_m_table->end()){ // Move to super class
-                      superName = super_c_info.superClassName;
-                  }
-                  else{ // If method does exist
-                      found = true;
-                  }
+        }
+      }
+      else{
+        // method not in currentMethodTable = look in Super MethodTable
+        //std::cout << currentVariableTable->find(node->identifier_1->name)->second.type.objectClassName;
+        if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
+          // knowing id_1's type (class)
+          superName = currentVariableTable->find(node->identifier_1->name)->second.type.objectClassName;
+          if(classTable->find(superName) != classTable->end()){
+            while(!found){
+              if(superName == ""){
+                // Looked through all superClasses
+                typeError(undefined_method);
               }
-              // To do this with expressions
-              m_info = super_m_iter->second;
-              if(m_info.parameters->size() == node->expression_list->size()){
-                  std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
-                  std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-          
-                  for(; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-                      if(m_param->baseType != (*n_param)->basetype)
-                        if((*n_param)->basetype == bt_boolean)
-                          std::cout << " bool\n";
-                        if((*n_param)->basetype == bt_integer)
-                          std::cout << " int\n";
-                        if((*n_param)->basetype == bt_object)
-                          std::cout << " object\n";    
-
-                        if(m_param->baseType == bt_boolean)
-                          std::cout << " bool\n";
-                        if(m_param->baseType == bt_integer)
-                          std::cout << " int\n";
-                        if(m_param->baseType == bt_object)
-                          std::cout << " object\n";    
-                      // Error: Parameters dont have the same types
-                          typeError(argument_type_mismatch);
-                  }
+              m_table = c_info.methods;
+              if(m_table->find(node->identifier_2->name) == m_table->end()){
+                // move onto the next superClass
+                c_iter = classTable->find(superName);
+                superName = c_iter->second.superClassName;
               }
               else{
-              // Error: Wrong number of parameters
+                found = true;
+                m_info = (m_table->find(node->identifier_2->name))->second;
+                std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+                std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+                //check size of the list
+                if(m_info.parameters->size() != node->expression_list->size()){
                   typeError(argument_number_mismatch);
+                }
+                //match types
+                for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+                  if(m_param->baseType != (*n_param)->basetype){
+                  // Error: Parameters dont have the same types
+                    typeError(argument_type_mismatch);
+                  }
+                }
               }
+            }
+          }
+          else{
+            //SHOULD NOT GO HERE, CURRENTCLASS IS ALWASY IN CLASSTABLE
+            std::cout << "INVALID1\n";
           }
         }
         else{
-        // Error: Can't find the Object Class in Table
-          typeError(undefined_class);
+          // Not declared in currentClassVariableTable
+          // But should not go here becuase it is defined in currentVariableTable, only using to get type to id_1
+          std::cout << "INVALID2\n";
         }
+      }
+    }
+    else{// v_iter == currentVariableTable->end()
+      // variable is not in currentVariableTable = look in Class VariableTable
+      c_iter = classTable->find(currentClassName);
+      if(c_iter != classTable->end()){
+        c_info = c_iter->second;
+        v_table = c_info.members;
+        v_iter = v_table->find(node->identifier_1->name);
+        if(v_iter != v_table->end()){
+          // In Class VariableTable
+          m_iter = currentMethodTable->find(node->identifier_2->name);
+          if(m_iter != currentMethodTable->end()){
+            // do parameters
+            m_info = m_iter->second;
+            std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+            std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+            //check size of the list
+            if(m_info.parameters->size() != node->expression_list->size()){
+                    typeError(argument_number_mismatch);
+            }
+            for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+              if(m_param->baseType != (*n_param)->basetype){
+              // Error: Parameters dont have the same types
+                typeError(argument_type_mismatch);
+              }
+            }
+          }
+          else{
+            // method not in currentMethodTable = look in Super MethodTable
+            c_iter = classTable->find(currentClassName);
+            if(c_iter != classTable->end()){
+              while(!found){
+                c_info = c_iter->second;
+                superName = c_info.superClassName;
+                if(superName == ""){
+                  // Looked through all superClasses
+                  typeError(undefined_method);
+                }
+                m_table = c_info.methods;
+                m_iter = m_table->find(node->identifier_2->name);
+                if(m_iter == m_table->end()){
+                  // move onto the next superClass
+                  c_iter = classTable->find(superName);
+                }
+                else{
+                  found = true;
+                  m_info = m_iter->second;
+                  std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+                  std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+                  //check size of the list
+                  if(m_info.parameters->size() != node->expression_list->size()){
+                    typeError(argument_number_mismatch);
+                  }
+                  //match types
+                  for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+                    if(m_param->baseType != (*n_param)->basetype){
+                    // Error: Parameters dont have the same types
+                      typeError(argument_type_mismatch);
+                    }
+                  }
+                }
+              }
+            }
+            else{
+              //SHOULD NOT GO HERE, CURRENTCLASS IS ALWASY IN CLASSTABLE
+            }
+          }
+        }
+      } 
+      else{
+        //SHOULD NOT GO HERE, CURRENTCLASS IS ALWAYS IN CLASSTABLE
+      }     
+    }
+  }
+  else{
+    // id_1 = method
+    m_iter = currentMethodTable->find(node->identifier_2->name);
+    if(m_iter != currentMethodTable->end()){
+      // do parameters
+      m_info = m_iter->second;
+      std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+      std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+      //check size of the list
+      if(m_info.parameters->size() != node->expression_list->size()){
+              typeError(argument_number_mismatch);
+      }
+      for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+        if(m_param->baseType != (*n_param)->basetype){
+        // Error: Parameters dont have the same types
+          typeError(argument_type_mismatch);
+        }
+      }
     }
     else{
-
-    }  
+      // method not in currentMethodTable = look in Super MethodTable
+      c_iter = classTable->find(currentClassName);
+      if(c_iter != classTable->end()){
+        while(!found){
+          c_info = c_iter->second;
+          superName = c_info.superClassName;
+          if(superName == ""){
+            // Looked through all superClasses
+            typeError(undefined_method);
+          }
+          m_table = c_info.methods;
+          m_iter = m_table->find(node->identifier_2->name);
+          if(m_iter == m_table->end()){
+            // move onto the next superClass
+            c_iter = classTable->find(superName);
+          }
+          else{
+            found = true;
+            m_info = m_iter->second;
+            std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+            std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+            //check size of the list
+            if(m_info.parameters->size() != node->expression_list->size()){
+              typeError(argument_number_mismatch);
+            }
+            //match types
+            for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+              if(m_param->baseType != (*n_param)->basetype){
+              // Error: Parameters dont have the same types
+                typeError(argument_type_mismatch);
+              }
+            }
+          }
+        }
+      }
+      else{
+        //SHOULD NOT GO HERE, CURRENTCLASS IS ALWASY IN CLASSTABLE
+      }
+    }
   }  
 }
 
@@ -760,34 +835,38 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
   std::string superName;
   bool found = true;
 
-  v_iter = currentVariableTable->find(node->identifier->name);
-  if(v_iter == currentVariableTable->end()){
-    c_iter = classTable->find(currentClassName);
+  v_iter = currentVariableTable->find(node->identifier->name); //searching for var
+  if(v_iter == currentVariableTable->end()){ // checking if var exsit in CurrentVarTable
+    // Not in CurrentVariableTable = Need to check Class VariableTable
+    c_iter = classTable->find(currentClassName); // Searching for currentClass in classTable
     if(c_iter != classTable->end()){
-    // Check Class VariableTable
+    // Checking Class VariableTable
       c_info = c_iter->second;
       v_table = c_info.members;
       v_iter = v_table->find(node->identifier->name);
       if(v_iter == v_table->end()){
-      // Check superClass
+      // Not in Class VariableTable = Check superClass
         c_info = c_iter->second;
         superName = c_info.superClassName;
         while (!found){
           if(superName == ""){
-          // Error: Method is not defined
+          // Not in any superClass
+          // Error: Member is not defined
               typeError(undefined_variable);
           }
           super_c_iter = classTable->find(superName);
           super_c_info = super_c_iter->second;
           super_v_table = super_c_info.members;
           super_v_iter = super_v_table->find(node->identifier->name);
-          if(v_iter == super_v_table->end()){ // Move to super class
+          if(v_iter == super_v_table->end()){ 
+          // Move to super class
               superName = super_c_info.superClassName;
           }
-          else{ // If var does exist
+          else{ 
+          // If variable found
             found = true;
             v_info = v_iter->second;
-            node->basetype = v_info.type.baseType;
+            node->basetype = v_info.type.baseType; //Setting baseType
             node->objectClassName = v_info.type.objectClassName;
           }
         } 
