@@ -265,7 +265,169 @@ void TypeCheck::visitReturnStatementNode(ReturnStatementNode* node) {
 void TypeCheck::visitAssignmentNode(AssignmentNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
+  std::cout << "assignment\n";
 
+  // std::map<std::basic_string<char>, ClassInfo>::iterator c_iter;
+  // std::map<std::basic_string<char>, MethodInfo>::iterator m_iter;
+  // std::map<std::basic_string<char>, VariableInfo>::iterator v_iter;
+  // std::map<std::basic_string<char>, ClassInfo>::iterator super_c_iter;
+  // std::map<std::basic_string<char>, MethodInfo>::iterator super_m_iter;
+  // ClassInfo c_info;
+  // MethodInfo m_info;
+  // VariableInfo v_info;
+  // MethodTable* m_table;
+  // VariableTable* v_table;
+  // std::string superName;
+  // bool found = false;
+
+  // if(node->identifier_2 != NULL){
+  // // id_1 = variable, id_2 = variable
+  //   if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
+  //     if(classTable->find(classTable->find(currentClassName)->second.members->find(node->identifier_1)->second.type.objectClassName) != classTable->end()){
+  //       c_info = classTable->find(classTable->find(currentClassName)->second.members->find(node->identifier_1)->second.type.objectClassName)->second;
+  //       v_table = c_info.type.objectClassName->members;
+  //       if(v_table->find(node->identifier_2->name) != v_table){
+  //         if(node->identifier_2->basetype == node->expression->basetype){
+  //           node->basetype = node->identifier_1->basetype;
+  //         }
+  //         else{
+  //           typeError(assignment_type_mismatch);
+  //         }
+  //       }
+  //       else{
+  //         c_iter = classTable->find(c_info.superClassName);
+  //         if(c_iter != classTable->end()){
+  //           while(!found){
+  //             if(superName == ""){
+  //               // Looked through all superClasses
+  //               typeError(undefined_member);
+  //             }
+  //             c_info = c_iter->second;
+  //             superName = c_info.superClassName;
+  //             v_table = c_info.members;
+  //             v_iter = v_table->find(node->identifier_2->name);
+  //             if(v_iter == v_table->end()){
+  //               // move onto the next superClass
+  //               c_iter = classTable->find(superName);
+  //             }
+  //             else{
+  //               found = true;
+  //               if(node->identifier_2->basetype == node->expression->basetype){
+  //                 node->basetype = node->identifier_1->basetype;
+  //               }
+  //               else{
+  //                 typeError(assignment_type_mismatch);
+  //               }
+  //             }
+  //           }
+  //         } 
+  //       }
+  //     }
+  //     else{
+  //       typeError(not_object);
+  //     }
+  //   }
+  //   else{
+  //   // check super
+  //     if(classTable->find(currentClassName) != classTable->end()){
+  //       v_table = classTable->find(currentClassName)->second.members;
+  //       if(v_table->find(node->identifier_1->name) != v_table->end()){
+  //         node->basetype = node->identifier_1->basetype;
+  //       }
+  //       else{
+  //         c_iter = classTable->find(currentClassName);
+  //         superName = c_iter->second.superClassName;
+  //         if(c_iter != classTable->end()){
+  //           while(!found){
+  //             if(superName == ""){
+  //               // Looked through all superClasses
+  //               typeError(undefined_member);
+  //             }
+  //             c_info = c_iter->second;
+  //             superName = c_info.superClassName;
+  //             v_table = c_info.members;
+  //             v_iter = v_table->find(node->identifier_1->name);
+  //             if(v_iter == v_table->end()){
+  //               // move onto the next superClass
+  //               c_iter = classTable->find(superName);
+  //             }
+  //             else{
+  //               found = true;
+  //               if(node->identifier_1->basetype == node->expression->basetype){
+  //                 node->basetype = node->identifier_1->basetype;
+  //               }
+  //               else{
+  //                 typeError(assignment_type_mismatch);
+  //               }
+  //             }
+  //           }
+  //         }
+  //         else{ 
+  //         // SHOULD NOT GO HERE
+  //         }
+  //       }
+  //     }
+  //     else{ 
+  //     //SHOULD NOT GO HERE 
+  //     }
+  //   }
+  // }
+  // else{
+  // // id_1 = variable 
+  //   if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
+  //     if(node->identifier_1->basetype == node->expression->basetype){
+  //       node->basetype = node->identifier_1->basetype;
+  //     }
+  //     else{
+  //       typeError(assignment_type_mismatch);
+  //     }
+  //   }
+  //   else{
+  //   // check super
+  //     if(classTable->find(currentClassName) != classTable->end()){
+  //       v_table = classTable->find(currentClassName)->second.members;
+  //       if(v_table->find(node->identifier_1->name) != v_table->end()){
+  //         node->basetype = node->identifier_1->basetype;
+  //       }
+  //       else{
+  //         c_iter = classTable->find(currentClassName);
+  //         superName = c_iter->second.superClassName;
+  //         if(c_iter != classTable->end()){
+  //           while(!found){
+  //             if(superName == ""){
+  //               // Looked through all superClasses
+  //               typeError(undefined_member);
+  //             }
+  //             c_info = c_iter->second;
+  //             superName = c_info.superClassName;
+  //             v_table = c_info.members;
+  //             v_iter = v_table->find(node->identifier_1->name);
+  //             if(v_iter == v_table->end()){
+  //               // move onto the next superClass
+  //               c_iter = classTable->find(superName);
+  //             }
+  //             else{
+  //               found = true;
+  //               if(node->identifier_1->basetype == node->expression->basetype){
+  //                 node->basetype = node->identifier_1->basetype;
+  //               }
+  //               else{
+  //                 typeError(assignment_type_mismatch);
+  //               }
+  //             }
+  //           }
+  //         }
+  //         else{ 
+  //         // SHOULD NOT GO HERE
+  //         }
+
+  //       }
+  //     }
+  //     else{ 
+  //     //SHOULD NOT GO HERE 
+  //     }
+  //   }
+  // }
 }
 
 void TypeCheck::visitCallNode(CallNode* node) {
@@ -539,6 +701,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                         }
                       }
                     }
+                    node->basetype = m_info.returnType.baseType;
                     // else if(node->expression_list == NULL)
                     //   std:: cout << "here2\n";
                     // else if(m_info.parameters == NULL){
@@ -624,6 +787,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                       typeError(argument_type_mismatch);
                     }
                   }
+                  node->basetype = m_info.returnType.baseType;
                 }
               }
             }
@@ -698,6 +862,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                       typeError(argument_type_mismatch);
                     }
                   }
+                  node->basetype = m_info.returnType.baseType;
                 }
               }
             }
@@ -732,7 +897,6 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           if(m_param->baseType != (*n_param)->basetype){
           // Error: Parameters dont have the same types
             //check objectClassName
-            std::cout << node->identifier_1->name;
             typeError(argument_type_mismatch);
           }
         }
@@ -772,6 +936,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                 typeError(argument_type_mismatch);
               }
             }
+            node->basetype = m_info.returnType.baseType;
           }
         }
       }
