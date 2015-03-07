@@ -118,7 +118,7 @@ void TypeCheck::visitClassNode(ClassNode* node) {
 
   if(node->identifier_2 != NULL){
     classInfo->superClassName = node->identifier_2->name;
-    std::cout << classInfo->superClassName << "apples\n";
+    //std::cout << classInfo->superClassName << "apples\n";
   }
   else
     classInfo->superClassName = "";
@@ -200,13 +200,13 @@ void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
 void TypeCheck::visitParameterNode(ParameterNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std:: cout << "in params ";
+  //std:: cout << "in params ";
   
   CompoundType* comType = new CompoundType;
   comType->baseType = node->type->basetype;
   comType->objectClassName = node->type->objectClassName;
   
-  std:: cout << node->identifier->name << "\n";
+  //std:: cout << node->identifier->name << "\n";
   node->identifier->objectClassName = node->type->objectClassName;
   node->identifier->basetype = node->type->basetype;
   //std::cout << node->identifier->objectClassName << "\n";
@@ -265,174 +265,119 @@ void TypeCheck::visitReturnStatementNode(ReturnStatementNode* node) {
 void TypeCheck::visitAssignmentNode(AssignmentNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "assignment\n";
+  //std::cout << "assignment\n";
 
-  // std::map<std::basic_string<char>, ClassInfo>::iterator c_iter;
-  // std::map<std::basic_string<char>, MethodInfo>::iterator m_iter;
-  // std::map<std::basic_string<char>, VariableInfo>::iterator v_iter;
-  // std::map<std::basic_string<char>, ClassInfo>::iterator super_c_iter;
-  // std::map<std::basic_string<char>, MethodInfo>::iterator super_m_iter;
-  // ClassInfo c_info;
-  // MethodInfo m_info;
-  // VariableInfo v_info;
-  // MethodTable* m_table;
-  // VariableTable* v_table;
-  // std::string superName;
-  // bool found = false;
+  std::string className;
+  VariableTable* v_table;
 
-  // if(node->identifier_2 != NULL){
-  // // id_1 = variable, id_2 = variable
-  //   if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
-  //     if(classTable->find(classTable->find(currentClassName)->second.members->find(node->identifier_1)->second.type.objectClassName) != classTable->end()){
-  //       c_info = classTable->find(classTable->find(currentClassName)->second.members->find(node->identifier_1)->second.type.objectClassName)->second;
-  //       v_table = c_info.type.objectClassName->members;
-  //       if(v_table->find(node->identifier_2->name) != v_table){
-  //         if(node->identifier_2->basetype == node->expression->basetype){
-  //           node->basetype = node->identifier_1->basetype;
-  //         }
-  //         else{
-  //           typeError(assignment_type_mismatch);
-  //         }
-  //       }
-  //       else{
-  //         c_iter = classTable->find(c_info.superClassName);
-  //         if(c_iter != classTable->end()){
-  //           while(!found){
-  //             if(superName == ""){
-  //               // Looked through all superClasses
-  //               typeError(undefined_member);
-  //             }
-  //             c_info = c_iter->second;
-  //             superName = c_info.superClassName;
-  //             v_table = c_info.members;
-  //             v_iter = v_table->find(node->identifier_2->name);
-  //             if(v_iter == v_table->end()){
-  //               // move onto the next superClass
-  //               c_iter = classTable->find(superName);
-  //             }
-  //             else{
-  //               found = true;
-  //               if(node->identifier_2->basetype == node->expression->basetype){
-  //                 node->basetype = node->identifier_1->basetype;
-  //               }
-  //               else{
-  //                 typeError(assignment_type_mismatch);
-  //               }
-  //             }
-  //           }
-  //         } 
-  //       }
-  //     }
-  //     else{
-  //       typeError(not_object);
-  //     }
-  //   }
-  //   else{
-  //   // check super
-  //     if(classTable->find(currentClassName) != classTable->end()){
-  //       v_table = classTable->find(currentClassName)->second.members;
-  //       if(v_table->find(node->identifier_1->name) != v_table->end()){
-  //         node->basetype = node->identifier_1->basetype;
-  //       }
-  //       else{
-  //         c_iter = classTable->find(currentClassName);
-  //         superName = c_iter->second.superClassName;
-  //         if(c_iter != classTable->end()){
-  //           while(!found){
-  //             if(superName == ""){
-  //               // Looked through all superClasses
-  //               typeError(undefined_member);
-  //             }
-  //             c_info = c_iter->second;
-  //             superName = c_info.superClassName;
-  //             v_table = c_info.members;
-  //             v_iter = v_table->find(node->identifier_1->name);
-  //             if(v_iter == v_table->end()){
-  //               // move onto the next superClass
-  //               c_iter = classTable->find(superName);
-  //             }
-  //             else{
-  //               found = true;
-  //               if(node->identifier_1->basetype == node->expression->basetype){
-  //                 node->basetype = node->identifier_1->basetype;
-  //               }
-  //               else{
-  //                 typeError(assignment_type_mismatch);
-  //               }
-  //             }
-  //           }
-  //         }
-  //         else{ 
-  //         // SHOULD NOT GO HERE
-  //         }
-  //       }
-  //     }
-  //     else{ 
-  //     //SHOULD NOT GO HERE 
-  //     }
-  //   }
-  // }
-  // else{
-  // // id_1 = variable 
-  //   if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
-  //     if(node->identifier_1->basetype == node->expression->basetype){
-  //       node->basetype = node->identifier_1->basetype;
-  //     }
-  //     else{
-  //       typeError(assignment_type_mismatch);
-  //     }
-  //   }
-  //   else{
-  //   // check super
-  //     if(classTable->find(currentClassName) != classTable->end()){
-  //       v_table = classTable->find(currentClassName)->second.members;
-  //       if(v_table->find(node->identifier_1->name) != v_table->end()){
-  //         node->basetype = node->identifier_1->basetype;
-  //       }
-  //       else{
-  //         c_iter = classTable->find(currentClassName);
-  //         superName = c_iter->second.superClassName;
-  //         if(c_iter != classTable->end()){
-  //           while(!found){
-  //             if(superName == ""){
-  //               // Looked through all superClasses
-  //               typeError(undefined_member);
-  //             }
-  //             c_info = c_iter->second;
-  //             superName = c_info.superClassName;
-  //             v_table = c_info.members;
-  //             v_iter = v_table->find(node->identifier_1->name);
-  //             if(v_iter == v_table->end()){
-  //               // move onto the next superClass
-  //               c_iter = classTable->find(superName);
-  //             }
-  //             else{
-  //               found = true;
-  //               if(node->identifier_1->basetype == node->expression->basetype){
-  //                 node->basetype = node->identifier_1->basetype;
-  //               }
-  //               else{
-  //                 typeError(assignment_type_mismatch);
-  //               }
-  //             }
-  //           }
-  //         }
-  //         else{ 
-  //         // SHOULD NOT GO HERE
-  //         }
+  if(node->identifier_2 == NULL){
+    //not an object
+    if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
+      node->basetype = (*currentVariableTable)[node->identifier_1->name].type.baseType;
+    }
+    else{
+      className = currentClassName;
+      while(className == ""){
+        if(classTable->find(className) != classTable->end()){
+          v_table = (*classTable)[className].members;
+          if(v_table->find(node->identifier_1->name) != v_table->end()){
+            node->basetype = (*v_table)[node->identifier_1->name].type.baseType;
+            break;
+          }
+          className = (*classTable)[className].superClassName;
+        }
+        else{
+          typeError(undefined_member);
+        }
+      }
+    }
+  }
+  else{
+    //id . id
+    if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
+      node->basetype = (*currentVariableTable)[node->identifier_1->name].type.baseType;
+      
+      className = (*classTable)[currentClassName].superClassName;
+      if(classTable->find(className) != classTable->end()){
+        v_table = (*classTable)[className].members;
+        if(v_table->find(node->identifier_2->name) != v_table->end()){
+          node->basetype = (*v_table)[node->identifier_2->name].type.baseType;
+        }
+        else{
+          className = (*classTable)[className].superClassName;
+          while(className == ""){
+            if(classTable->find(className) != classTable->end()){
+              v_table = (*classTable)[className].members;
+              if(v_table->find(node->identifier_2->name) != v_table->end()){
+                node->basetype = (*v_table)[node->identifier_2->name].type.baseType;
+                break;
+              }
+              className = (*classTable)[className].superClassName;
+            }
+            else{
+              typeError(undefined_member);
+            }
+          }
+        }
+      }
+      else{
+        typeError(undefined_member);
+      }
+    }
+    else{
+      className = currentClassName;
+      while(className == ""){
+        if(classTable->find(className) != classTable->end()){
+          v_table = (*classTable)[className].members;
+          if(v_table->find(node->identifier_1->name) != v_table->end()){
+            className = (*classTable)[className].superClassName;
+            if(classTable->find(className) != classTable->end()){
+              v_table = (*classTable)[className].members;
+      
 
-  //       }
-  //     }
-  //     else{ 
-  //     //SHOULD NOT GO HERE 
-  //     }
-  //   }
-  // }
+              if(v_table->find(node->identifier_2->name) != v_table->end()){
+                node->basetype = (*v_table)[node->identifier_2->name].type.baseType;
+              }
+              else{
+                className = (*classTable)[className].superClassName;
+                while(className == ""){
+                  if(classTable->find(className) != classTable->end()){
+                    v_table = (*classTable)[className].members;
+                    if(v_table->find(node->identifier_2->name) != v_table->end()){
+                      node->basetype = (*v_table)[node->identifier_2->name].type.baseType;
+                      break;
+                    }
+                    className = (*classTable)[className].superClassName;
+                  }
+                  else{
+                    typeError(undefined_member);
+                  }
+                }
+              }
+            }
+            else{
+              typeError(undefined_member);
+            }
+            break;
+          }
+          className = (*classTable)[className].superClassName;
+        }
+        else{
+          typeError(undefined_member);
+        }
+      }
+    }
+  }
+  if(node->basetype != node->expression->basetype){
+    typeError(assignment_type_mismatch);
+  }
 }
 
 void TypeCheck::visitCallNode(CallNode* node) {
   // WRITEME: Replace with code if necessary
     node->visit_children(this);
+
+    node->basetype = node->methodcall->basetype;
 
 }
 
@@ -451,13 +396,13 @@ void TypeCheck::visitWhileNode(WhileNode* node) {
 void TypeCheck::visitPrintNode(PrintNode* node) {
   // WRITEME: Replace with code if necessary
     node->visit_children(this);
-    std::cout << "print\n";
+    //std::cout << "print\n";
 }
 
 void TypeCheck::visitPlusNode(PlusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "plus\n";
+  //std::cout << "plus\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -474,7 +419,7 @@ void TypeCheck::visitPlusNode(PlusNode* node) {
 void TypeCheck::visitMinusNode(MinusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-    std::cout << "minus\n";
+    //std::cout << "minus\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -490,7 +435,7 @@ void TypeCheck::visitMinusNode(MinusNode* node) {
 void TypeCheck::visitTimesNode(TimesNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this); 
-  std::cout << "times\n";
+  //std::cout << "times\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -506,7 +451,7 @@ void TypeCheck::visitTimesNode(TimesNode* node) {
 void TypeCheck::visitDivideNode(DivideNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "divide\n";
+  //std::cout << "divide\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -522,7 +467,7 @@ void TypeCheck::visitDivideNode(DivideNode* node) {
 void TypeCheck::visitLessNode(LessNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "less\n";
+  //std::cout << "less\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -538,7 +483,7 @@ void TypeCheck::visitLessNode(LessNode* node) {
 void TypeCheck::visitLessEqualNode(LessEqualNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "lessequal\n";
+  //std::cout << "lessequal\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -554,7 +499,7 @@ void TypeCheck::visitLessEqualNode(LessEqualNode* node) {
 void TypeCheck::visitEqualNode(EqualNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "equal\n";
+  //std::cout << "equal\n";
   
   if(node->expression_1->basetype != node->expression_2->basetype)
     typeError(expression_type_mismatch);
@@ -565,7 +510,7 @@ void TypeCheck::visitEqualNode(EqualNode* node) {
 void TypeCheck::visitAndNode(AndNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "and\n";
+  //std::cout << "and\n";
 
   if(node->expression_1->basetype != bt_boolean){
     typeError(expression_type_mismatch);
@@ -580,7 +525,7 @@ void TypeCheck::visitAndNode(AndNode* node) {
 
 void TypeCheck::visitOrNode(OrNode* node) {
   // WRITEME: Replace with code if necessary
-  std::cout << "or\n";
+  //std::cout << "or\n";
   node->visit_children(this);
 
   if(node->expression_1->basetype != bt_boolean){
@@ -597,7 +542,7 @@ void TypeCheck::visitOrNode(OrNode* node) {
 void TypeCheck::visitNotNode(NotNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "not\n";
+  //std::cout << "not\n";
 
   // if(node->expression->basetype == bt_boolean)
   //   std::cout << " bool\n";
@@ -617,7 +562,7 @@ void TypeCheck::visitNegationNode(NegationNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
   
-  std::cout << "negation\n";
+  //std::cout << "negation\n";
   if(node->expression->basetype != bt_integer){
     typeError(expression_type_mismatch);
   }
@@ -628,7 +573,7 @@ void TypeCheck::visitNegationNode(NegationNode* node) {
 void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "methodCall\n";
+  //std::cout << "methodCall\n";
   
 
   std::map<std::basic_string<char>, ClassInfo>::iterator c_iter;
@@ -656,7 +601,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
           //check size of the list
           if(m_info.parameters->size() != node->expression_list->size()){
-            std::cout << "here1\n";
+            //std::cout << "here1\n";
             typeError(argument_number_mismatch);
           }
           for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
@@ -718,18 +663,18 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             }
             else{
               //SHOULD NOT GO HERE, CURRENTCLASS IS ALWASY IN CLASSTABLE
-              std::cout << "INVALID1\n";
+              //std::cout << "INVALID1\n";
             }
           }
           else{
             // Not declared in currentClassVariableTable
             // But should not go here becuase it is defined in currentVariableTable, only using to get type to id_1
-            std::cout << "INVALID2\n";
+            //std::cout << "INVALID2\n";
           }
         }
       }
       else{
-        std::cout << node->identifier_1->name << "\n";
+        //std::cout << node->identifier_1->name << "\n";
         if(currentVariableTable->find(node->identifier_1->name) != currentVariableTable->end()){
           v_info = currentVariableTable->find(node->identifier_1->name)->second;
           if(classTable->find(v_info.type.objectClassName) != classTable->end()){
@@ -742,7 +687,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                 std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
                 //check size of the list
                 if(m_info.parameters->size() != node->expression_list->size()){
-                  std::cout << "here4\n";
+                  //std::cout << "here4\n";
                   typeError(argument_number_mismatch);
                 }
                 for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
@@ -758,7 +703,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
               c_iter = classTable->find(superName);
               while(!found){
                 c_info = c_iter->second;
-                std::cout << node->identifier_1->name << "\n";
+                //std::cout << node->identifier_1->name << "\n";
                 if(superName == ""){
                   // Looked through all superClasses
                   typeError(undefined_method);
@@ -777,7 +722,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                   std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
                   //check size of the list
                   if(m_info.parameters->size() != node->expression_list->size()){
-                    std::cout << "here2\n";
+                    //std::cout << "here2\n";
                     typeError(argument_number_mismatch);
                   }
                   //match types
@@ -816,7 +761,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
             //check size of the list
             if(m_info.parameters->size() != node->expression_list->size()){
-              std::cout << "here4\n";
+              //std::cout << "here4\n";
               typeError(argument_number_mismatch);
             }
             for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
@@ -833,7 +778,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             if(c_iter != classTable->end()){
               while(!found){
                 c_info = c_iter->second;
-                std::cout << node->identifier_1->name << "\n";
+                //std::cout << node->identifier_1->name << "\n";
                 if(superName == ""){
                   // Looked through all superClasses
                   typeError(undefined_method);
@@ -852,7 +797,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                   std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
                   //check size of the list
                   if(m_info.parameters->size() != node->expression_list->size()){
-                    std::cout << "here2\n";
+                    //std::cout << "here2\n";
                     typeError(argument_number_mismatch);
                   }
                   //match types
@@ -891,9 +836,9 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           typeError(argument_number_mismatch);
         }
         for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-          std::cout << m_param->baseType << "\n";
-          std::cout << (*n_param)->basetype << "\n";
-
+          //std::cout << m_param->baseType << "\n";
+          //std::cout << (*n_param)->basetype << "\n";
+          //std::cout << node->identifier_1->name << "\n";
           if(m_param->baseType != (*n_param)->basetype){
           // Error: Parameters dont have the same types
             //check objectClassName
@@ -926,7 +871,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
             //check size of the list
             if(m_info.parameters->size() != node->expression_list->size()){
-              std::cout << "here3\n";
+              //std::cout << "here3\n";
               typeError(argument_number_mismatch);
             }
             //match types
@@ -950,7 +895,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
 void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  std::cout << "memberAccess\n";
+  //std::cout << "memberAccess\n";
 
   std::map<std::string, VariableInfo>::iterator v_iter;
   std::map<std::string, ClassInfo>::iterator c_iter;
@@ -1085,7 +1030,7 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
 
 void TypeCheck::visitVariableNode(VariableNode* node) {
   // WRITEME: Replace with code if necessary
-  std::cout << "variable\n";
+ // std::cout << "variable\n";
 
   std::map<std::string, VariableInfo>::iterator v_iter; 
   std::map<std::string, VariableInfo>::iterator super_v_iter; 
@@ -1154,13 +1099,13 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
 
 void TypeCheck::visitIntegerLiteralNode(IntegerLiteralNode* node) {
   // WRITEME: Replace with code if necessary
-  std::cout << "int literal\n";
+ // std::cout << "int literal\n";
   node->basetype = bt_integer;
 }
 
 void TypeCheck::visitBooleanLiteralNode(BooleanLiteralNode* node) {
   // WRITEME: Replace with code if necessary
-  std::cout << "bool literal\n";
+ // std::cout << "bool literal\n";
   node->basetype = bt_boolean;
 }
 
@@ -1211,7 +1156,7 @@ void TypeCheck::visitObjectTypeNode(ObjectTypeNode* node) {
   // WRITEME: Replace with code if necessary
   node->basetype = bt_object;
   node->objectClassName = node->identifier->name;
-  std:: cout << node->objectClassName << "\n";
+  //std:: cout << node->objectClassName << "\n";
 }
 
 void TypeCheck::visitNoneNode(NoneNode* node) {
