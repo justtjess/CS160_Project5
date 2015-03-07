@@ -896,7 +896,7 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
     }
     else{
     // Can't find currentClassTable in ClassTable
-      // typeError(undefined_class); 
+      typeError(undefined_class); 
     }
   }
   else{
