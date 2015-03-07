@@ -740,6 +740,10 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                     typeError(argument_type_mismatch);
                   }
                 }
+                std::cout << "here\n";
+                node->basetype = m_info.returnType.baseType;
+              }
+              else{
                 node->basetype = m_info.returnType.baseType;
               }
             }
