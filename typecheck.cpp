@@ -887,8 +887,8 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
         } 
       }
       else{
-        std::cout << "here\n";
         v_info = v_iter->second;
+                std::cout << "here\n";
         node->basetype = v_info.type.baseType;
         node->objectClassName = v_info.type.objectClassName;
       }
