@@ -510,6 +510,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             while(!found){
               if(superName == ""){
                 // Looked through all superClasses
+                std::cout << "here1\n";
                 typeError(undefined_method);
               }
               if(classTable->find(superName) != classTable->end()){
@@ -578,7 +579,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
             //check size of the list
             if(m_info.parameters->size() != node->expression_list->size()){
-                    typeError(argument_number_mismatch);
+              typeError(argument_number_mismatch);
             }
             for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
               if(m_param->baseType != (*n_param)->basetype){
@@ -596,6 +597,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                 superName = c_info.superClassName;
                 if(superName == ""){
                   // Looked through all superClasses
+                  std::cout << "here2\n";
                   typeError(undefined_method);
                 }
                 m_table = c_info.methods;
@@ -668,6 +670,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           superName = c_info.superClassName;
           if(superName == ""){
             // Looked through all superClasses
+            std::cout << "here3\n";
             typeError(undefined_method);
           }
           m_table = c_info.methods;
@@ -934,21 +937,20 @@ void TypeCheck::visitNewNode(NewNode* node) {
     m_table = classTable->find(node->identifier->name)->second.methods;
     if(m_table->find(node->identifier->name) != m_table->end()){
       param = m_table->find(node->identifier->name)->second.parameters;
-
-      std::list<CompoundType>::iterator m_param = param->begin();
-      std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-      //check size of the list
-      if(param->size() != node->expression_list->size()){
-        typeError(argument_number_mismatch);
-      }
-      for (; m_param != param->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-        if(m_param->baseType != (*n_param)->basetype){
-        // Error: Parameters dont have the same types
-          typeError(argument_type_mismatch);
+      if(param != NULL && node->expression_list != NULL){
+        std::list<CompoundType>::iterator m_param = param->begin();
+        std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+        //check size of the list
+        if(param->size() != node->expression_list->size()){
+          typeError(argument_number_mismatch);
+        }
+        for (; m_param != param->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+          if(m_param->baseType != (*n_param)->basetype){
+          // Error: Parameters dont have the same types
+            typeError(argument_type_mismatch);
+          }
         }
       }
-
-
     }
   }
 }
