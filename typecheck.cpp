@@ -183,6 +183,8 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
   (*currentMethodTable)[node->identifier->name] = (*methInfo);
   if(node->methodbody->returnstatement != NULL){
     if(node->methodbody->basetype != node->type->basetype){
+
+      std::cout << node->methodbody->basetype << " " << node->type->basetype << "\n";
       typeError(return_type_mismatch);
     }
   }
@@ -266,6 +268,7 @@ void TypeCheck::visitDeclarationNode(DeclarationNode* node) {
 void TypeCheck::visitReturnStatementNode(ReturnStatementNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
+  std::cout << "return\n";
   node->basetype = node->expression->basetype;
 }
 
@@ -1004,8 +1007,10 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
       }
       else{
         // Member exist in Class VariableTable
+        std::cout << node->identifier_1->name << " " << node->identifier_2->name << "\n";
         v_info = v_iter->second;
         node->basetype = v_info.type.baseType;
+        std::cout << node->basetype << "\n";
         node->objectClassName = v_info.type.objectClassName;
       }
     }
