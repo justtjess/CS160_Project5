@@ -116,8 +116,10 @@ void TypeCheck::visitClassNode(ClassNode* node) {
   
   ClassInfo* classInfo = new ClassInfo;
 
-  if(node->identifier_2 != NULL)
+  if(node->identifier_2 != NULL){
     classInfo->superClassName = node->identifier_2->name;
+    std::cout << classInfo->superClassName << "apples\n";
+  }
   else
     classInfo->superClassName = "";
 
@@ -595,6 +597,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
               while(!found){
                 c_info = c_iter->second;
                 superName = c_info.superClassName;
+                std:: cout << superName << "orange\n";
                 if(superName == ""){
                   // Looked through all superClasses
                   std::cout << "here2\n";
