@@ -819,6 +819,7 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
             }
           }
           else{
+
             v_info = v_iter->second;
             node->basetype = v_info.type.baseType;
             node->objectClassName = v_info.type.objectClassName;
@@ -875,14 +876,14 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
           super_c_info = super_c_iter->second;
           super_v_table = super_c_info.members;
           super_v_iter = super_v_table->find(node->identifier->name);
-          if(v_iter == super_v_table->end()){ 
+          if(super_v_iter == super_v_table->end()){ 
           // Move to super class
               superName = super_c_info.superClassName;
           }
           else{ 
           // If variable found
             found = true;
-            v_info = v_iter->second;
+            v_info = super_v_iter->second;
             node->basetype = v_info.type.baseType; //Setting baseType
             node->objectClassName = v_info.type.objectClassName;
           }
@@ -921,6 +922,35 @@ void TypeCheck::visitBooleanLiteralNode(BooleanLiteralNode* node) {
 void TypeCheck::visitNewNode(NewNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
+  node->basetype = bt_object;
+  node->objectClassName = node->identifier->name;
+
+  std::map<std::string, ClassInfo>::iterator c_iter;
+  MethodTable* m_table;
+  std::list<CompoundType>* param;
+
+
+  if(classTable->find(node->identifier->name) != classTable->end()){
+    m_table = classTable->find(node->identifier->name)->second.methods;
+    if(m_table->find(node->identifier->name) != m_table->end()){
+      param = m_table->find(node->identifier->name)->second.parameters;
+
+      std::list<CompoundType>::iterator m_param = param->begin();
+      std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+      //check size of the list
+      if(param->size() != node->expression_list->size()){
+        typeError(argument_number_mismatch);
+      }
+      for (; m_param != param->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+        if(m_param->baseType != (*n_param)->basetype){
+        // Error: Parameters dont have the same types
+          typeError(argument_type_mismatch);
+        }
+      }
+
+
+    }
+  }
 }
 
 void TypeCheck::visitIntegerTypeNode(IntegerTypeNode* node) {
