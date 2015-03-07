@@ -493,6 +493,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
         std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
         //check size of the list
         if(m_info.parameters->size() != node->expression_list->size()){
+                std::cout << "here1\n";
                 typeError(argument_number_mismatch);
         }
         for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
@@ -512,7 +513,6 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             while(!found){
               if(superName == ""){
                 // Looked through all superClasses
-                std::cout << "here1\n";
                 typeError(undefined_method);
               }
               if(classTable->find(superName) != classTable->end()){
@@ -581,6 +581,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
             //check size of the list
             if(m_info.parameters->size() != node->expression_list->size()){
+              std::cout << "here4\n";
               typeError(argument_number_mismatch);
             }
             for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
@@ -593,14 +594,13 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           else{
             // method not in currentMethodTable = look in Super MethodTable
             c_iter = classTable->find(currentClassName);
+            superName = c_info.superClassName;
             if(c_iter != classTable->end()){
               while(!found){
                 c_info = c_iter->second;
-                superName = c_info.superClassName;
-                std:: cout << superName << "orange\n";
+                std::cout << node->identifier_1->name << "\n";
                 if(superName == ""){
                   // Looked through all superClasses
-                  std::cout << "here2\n";
                   typeError(undefined_method);
                 }
                 m_table = c_info.methods;
@@ -608,6 +608,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                 if(m_iter == m_table->end()){
                   // move onto the next superClass
                   c_iter = classTable->find(superName);
+                  superName = c_info.superClassName;
                 }
                 else{
                   found = true;
@@ -616,6 +617,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
                   std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
                   //check size of the list
                   if(m_info.parameters->size() != node->expression_list->size()){
+                    std::cout << "here2\n";
                     typeError(argument_number_mismatch);
                   }
                   //match types
@@ -673,7 +675,6 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
           superName = c_info.superClassName;
           if(superName == ""){
             // Looked through all superClasses
-            std::cout << "here3\n";
             typeError(undefined_method);
           }
           m_table = c_info.methods;
@@ -689,6 +690,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
             //check size of the list
             if(m_info.parameters->size() != node->expression_list->size()){
+              std::cout << "here3\n";
               typeError(argument_number_mismatch);
             }
             //match types
