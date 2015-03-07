@@ -181,8 +181,14 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
   methInfo->returnType = (*type);
 
   (*currentMethodTable)[node->identifier->name] = (*methInfo);
-  if(node->methodbody->basetype != node->type->basetype){
-    typeError(return_type_mismatch);
+  if(node->methodbody->returnstatement != NULL){
+    if(node->methodbody->basetype != node->type->basetype){
+      typeError(return_type_mismatch);
+    }
+  }
+  else{
+    if(node->type->basetype != bt_none)
+      typeError(return_type_mismatch);
   }
   inClass = true;
 }
@@ -190,7 +196,8 @@ void TypeCheck::visitMethodNode(MethodNode* node) {
 void TypeCheck::visitMethodBodyNode(MethodBodyNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  node->basetype = node->returnstatement->basetype;
+  if(node->returnstatement != NULL)
+    node->basetype = node->returnstatement->basetype;
 }
 
 void TypeCheck::visitParameterNode(ParameterNode* node) {
