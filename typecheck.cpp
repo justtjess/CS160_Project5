@@ -859,7 +859,9 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
     c_iter = classTable->find(currentClassName); // Searching for currentClass in classTable
     if(c_iter != classTable->end()){
     // Checking Class VariableTable
-      v_iter = c_iter->second.members->find(node->identifier->name);
+      c_info = c_iter->second;
+      v_table = c_info.members;
+      v_iter = v_table->find(node->identifier->name);
       if(v_iter == v_table->end()){
       // Not in Class VariableTable = Check superClass
         superName = c_iter->second.superClassName;
@@ -888,7 +890,6 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
       }
       else{
         v_info = v_iter->second;
-                std::cout << "here\n";
         node->basetype = v_info.type.baseType;
         node->objectClassName = v_info.type.objectClassName;
       }
