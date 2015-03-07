@@ -851,7 +851,7 @@ void TypeCheck::visitVariableNode(VariableNode* node) {
   ClassInfo c_info;
   ClassInfo super_c_info;
   std::string superName;
-  bool found = true;
+  bool found = false;
 
   v_iter = currentVariableTable->find(node->identifier->name); //searching for var
   if(v_iter == currentVariableTable->end()){ // checking if var exsit in CurrentVarTable
