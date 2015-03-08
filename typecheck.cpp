@@ -761,7 +761,7 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             else{
               superName = c_info.superClassName;
               c_iter = classTable->find(superName);
-              if(c_iter != classTable->end())
+              if(c_iter != classTable->end()){
                 while(!found){
                   c_info = c_iter->second;
                   //std::cout << node->identifier_1->name << "\n";

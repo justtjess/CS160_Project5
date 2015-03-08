@@ -1,0 +1,11 @@
+1,2d0
+< g++ -g  -g -c -o typecheck.o typecheck.cpp
+< g++ -o lang ast.o parser.o lexer.o typecheck.o main.o
+4117c4115
+< No output.
+---
+> Method does not exist.
+4201c4199
+< No output.
+---
+> Method does not exist.
