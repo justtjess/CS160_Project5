@@ -761,39 +761,44 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             else{
               superName = c_info.superClassName;
               c_iter = classTable->find(superName);
-              while(!found){
-                c_info = c_iter->second;
-                //std::cout << node->identifier_1->name << "\n";
-                if(superName == ""){
-                  // Looked through all superClasses
-                  typeError(undefined_method);
-                }
-                m_table = c_info.methods;
-                m_iter = m_table->find(node->identifier_2->name);
-                if(m_iter == m_table->end()){
-                  // move onto the next superClass
-                  c_iter = classTable->find(superName);
-                  superName = c_info.superClassName;
-                }
-                else{
-                  found = true;
-                  m_info = m_iter->second;
-                  std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
-                  std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-                  //check size of the list
-                  if(m_info.parameters->size() != node->expression_list->size()){
-                    //std::cout << "here2\n";
-                    typeError(argument_number_mismatch);
+              if(c_iter != classTable->end())
+                while(!found){
+                  c_info = c_iter->second;
+                  //std::cout << node->identifier_1->name << "\n";
+                  if(superName == ""){
+                    // Looked through all superClasses
+                    typeError(undefined_method);
                   }
-                  //match types
-                  for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-                    if(m_param->baseType != (*n_param)->basetype){
-                    // Error: Parameters dont have the same types
-                      typeError(argument_type_mismatch);
+                  m_table = c_info.methods;
+                  m_iter = m_table->find(node->identifier_2->name);
+                  if(m_iter == m_table->end()){
+                    // move onto the next superClass
+                    c_iter = classTable->find(superName);
+                    superName = c_info.superClassName;
+                  }
+                  else{
+                    found = true;
+                    m_info = m_iter->second;
+                    std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+                    std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+                    //check size of the list
+                    if(m_info.parameters->size() != node->expression_list->size()){
+                      //std::cout << "here2\n";
+                      typeError(argument_number_mismatch);
                     }
+                    //match types
+                    for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+                      if(m_param->baseType != (*n_param)->basetype){
+                      // Error: Parameters dont have the same types
+                        typeError(argument_type_mismatch);
+                      }
+                    }
+                    node->basetype = m_info.returnType.baseType;
                   }
-                  node->basetype = m_info.returnType.baseType;
                 }
+              }
+              else{
+                typeError(undefined_method);
               }
             }
           }
