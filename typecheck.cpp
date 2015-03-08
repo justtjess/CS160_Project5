@@ -344,6 +344,7 @@ void TypeCheck::visitAssignmentNode(AssignmentNode* node) {
             }
           }
           if(!found){
+            //std::cout << "here\n";
             typeError(undefined_member);
           }
         }
@@ -819,20 +820,25 @@ void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
             if(m_iter != m_table->end()){
               // do parameters
               m_info = m_iter->second;
-              std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
-              std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
-              //check size of the list
-              if(m_info.parameters->size() != node->expression_list->size()){
-                //std::cout << "here4\n";
-                typeError(argument_number_mismatch);
-              }
-              for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
-                if(m_param->baseType != (*n_param)->basetype){
-                // Error: Parameters dont have the same types
-                  typeError(argument_type_mismatch);
+              if(m_info.parameters != NULL && node->expression_list != NULL){
+                std::list<CompoundType>::iterator m_param = m_info.parameters->begin();
+                std::list<ExpressionNode*>::iterator n_param = node->expression_list->begin();
+                //check size of the list
+                if(m_info.parameters->size() != node->expression_list->size()){
+                  //std::cout << "here4\n";
+                  typeError(argument_number_mismatch);
                 }
+                for (; m_param != m_info.parameters->end() && n_param != node->expression_list->end(); ++m_param, ++n_param){
+                  if(m_param->baseType != (*n_param)->basetype){
+                  // Error: Parameters dont have the same types
+                    typeError(argument_type_mismatch);
+                  }
+                }
+                node->basetype = m_info.returnType.baseType;
               }
-              node->basetype = m_info.returnType.baseType;
+              else{
+                node->basetype = m_info.returnType.baseType;
+              }
             }
             else{
               // method not in currentMethodTable = look in Super MethodTable
