@@ -446,13 +446,13 @@ void TypeCheck::visitWhileNode(WhileNode* node) {
 void TypeCheck::visitPrintNode(PrintNode* node) {
   // WRITEME: Replace with code if necessary
     node->visit_children(this);
-  //  std::cout << "print\n";
+  //std::cout << "print\n";
 }
 
 void TypeCheck::visitPlusNode(PlusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
- // std::cout << "plus\n";
+// std::cout << "plus\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -469,7 +469,7 @@ void TypeCheck::visitPlusNode(PlusNode* node) {
 void TypeCheck::visitMinusNode(MinusNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-   // std::cout << "minus\n";
+ //  std::cout << "minus\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -485,7 +485,7 @@ void TypeCheck::visitMinusNode(MinusNode* node) {
 void TypeCheck::visitTimesNode(TimesNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this); 
-  //std::cout << "times\n";
+ // std::cout << "times\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -517,7 +517,7 @@ void TypeCheck::visitDivideNode(DivideNode* node) {
 void TypeCheck::visitLessNode(LessNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
- // std::cout << "less\n";
+ //std::cout << "less\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -533,7 +533,7 @@ void TypeCheck::visitLessNode(LessNode* node) {
 void TypeCheck::visitLessEqualNode(LessEqualNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
- // std::cout << "lessequal\n";
+ //std::cout << "lessequal\n";
 
   if(node->expression_1->basetype != bt_integer){
     typeError(expression_type_mismatch);
@@ -549,7 +549,7 @@ void TypeCheck::visitLessEqualNode(LessEqualNode* node) {
 void TypeCheck::visitEqualNode(EqualNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  //std::cout << "equal\n";
+ // std::cout << "equal\n";
   
   if(node->expression_1->basetype != node->expression_2->basetype)
     typeError(expression_type_mismatch);
@@ -560,7 +560,7 @@ void TypeCheck::visitEqualNode(EqualNode* node) {
 void TypeCheck::visitAndNode(AndNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  //std::cout << "and\n";
+//  std::cout << "and\n";
 
   // std::cout << node->expression_1->basetype << " " << node->expression_2->basetype << "\n";
   if(node->expression_1->basetype != bt_boolean){
@@ -576,7 +576,7 @@ void TypeCheck::visitAndNode(AndNode* node) {
 
 void TypeCheck::visitOrNode(OrNode* node) {
   // WRITEME: Replace with code if necessary
- // std::cout << "or\n";
+//  std::cout << "or\n";
   node->visit_children(this);
 
   if(node->expression_1->basetype != bt_boolean){
@@ -624,7 +624,7 @@ void TypeCheck::visitNegationNode(NegationNode* node) {
 void TypeCheck::visitMethodCallNode(MethodCallNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  //std::cout << "methodCall\n";
+//  std::cout << "methodCall\n";
 
   //  std::cout << node->identifier_1->name << "\n";
   // if(node->identifier_2 != NULL)
@@ -980,8 +980,10 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
   std::string v_className;
   std::string c_name;
   bool found = false;
+  VariableTable * v_table;
+  std::string superName;
 
-  //std::cout << node->identifier_1->name << "\n";
+  
 
   // Check local VariableTable
   v_iter = currentVariableTable->find(node->identifier_1->name);
@@ -1100,7 +1102,50 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
         }
       }
       else{
-        typeError(undefined_variable);
+        superName = c_info.superClassName;
+        while(superName == ""){
+          if(classTable->find(superName) != classTable->end()){
+            c_info = classTable->find(superName)->second;
+            v_table = c_info.members;
+            if(v_table->find(node->identifier_1->name) != v_table->end()){
+              v_info = v_table->find(node->identifier_1->name)->second;
+              if(classTable->find(v_info.type.objectClassName) != classTable->end()){
+                c_info = classTable->find(v_info.type.objectClassName)->second;
+                superName = v_info.type.objectClassName;
+                while(superName == ""){
+                  if(classTable->find(superName) != classTable->end()){
+                    c_info = classTable->find(superName)->second;
+                    v_table = c_info.members;
+                    if(v_table->find(node->identifier_2->name) != v_table->end()){
+                      found = true;
+                      v_info = v_table->find(node->identifier_2->name)->second;
+                      node->basetype = v_info.type.baseType;
+                      node->objectClassName = v_info.type.objectClassName;
+                    }
+                    else{
+                      superName = c_info.superClassName;
+                    }
+                  }
+                  else{
+                    typeError(not_object);
+                  }
+                }
+                if(!found){
+
+                }
+              }
+              else{
+                typeError(not_object);
+              }
+            }
+            else{
+              superName = c_info.superClassName;
+            } 
+          }
+          else{
+            typeError(undefined_variable);
+          }
+        }
       }
     }
     else{
