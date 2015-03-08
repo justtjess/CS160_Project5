@@ -415,7 +415,7 @@ void TypeCheck::visitCallNode(CallNode* node) {
 void TypeCheck::visitIfElseNode(IfElseNode* node) {
   // WRITEME: Replace with code if necessary
   node->visit_children(this);
-  
+  std::cout << "if\n";
   if(node->expression->basetype != bt_boolean){
     typeError(if_predicate_type_mismatch);
   }
