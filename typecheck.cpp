@@ -1103,7 +1103,7 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
       }
       else{
         superName = c_info.superClassName;
-        while(superName == ""){
+        while(superName != ""){
           if(classTable->find(superName) != classTable->end()){
             c_info = classTable->find(superName)->second;
             v_table = c_info.members;
@@ -1112,7 +1112,7 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
               if(classTable->find(v_info.type.objectClassName) != classTable->end()){
                 c_info = classTable->find(v_info.type.objectClassName)->second;
                 superName = v_info.type.objectClassName;
-                while(superName == ""){
+                while(superName != "" && !found){
                   if(classTable->find(superName) != classTable->end()){
                     c_info = classTable->find(superName)->second;
                     v_table = c_info.members;
@@ -1121,6 +1121,7 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
                       v_info = v_table->find(node->identifier_2->name)->second;
                       node->basetype = v_info.type.baseType;
                       node->objectClassName = v_info.type.objectClassName;
+                      break;
                     }
                     else{
                       superName = c_info.superClassName;
@@ -1130,8 +1131,8 @@ void TypeCheck::visitMemberAccessNode(MemberAccessNode* node) {
                     typeError(not_object);
                   }
                 }
-                if(!found){
-
+                if(found){
+                  break;
                 }
               }
               else{
